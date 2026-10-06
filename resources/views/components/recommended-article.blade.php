@@ -1,0 +1,2 @@
+@props(['article'])
+<a class="recommended" href="{{ route('articles.show', $article) }}"><div class="recommended-image"><img src="{{ asset('images/articles/'.$article->image) }}" alt="" loading="lazy" onerror="this.style.display='none'"></div><div><x-category-badge :category="$article->category"/><h3>{{ $article->title }}</h3><span class="muted">{{ $article->published_at->translatedFormat('j M Y') }} · {{ $article->reading_time }} min</span></div></a>
