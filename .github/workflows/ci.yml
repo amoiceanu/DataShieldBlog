@@ -53,6 +53,8 @@ jobs:
   php-tests:
     name: PHPUnit, coverage, and Gherkin
     runs-on: ubuntu-latest
+    env:
+      XDEBUG_MODE: coverage
     steps:
       - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
@@ -62,5 +64,6 @@ jobs:
           extensions: mbstring, sqlite3, pdo_sqlite, xml, curl, dom, fileinfo
           tools: composer
       - run: composer install --no-interaction --prefer-dist --no-progress
-      - run: vendor/bin/phpunit --coverage-text --coverage-min=70
+      - run: vendor/bin/phpunit --coverage-clover=coverage.xml
+      - run: php scripts/check-coverage.php coverage.xml 70
       - run: composer test:gherkin
