@@ -41,9 +41,10 @@ Pe Windows, copiază `.env.example` în `.env` din PowerShell cu `Copy-Item .env
 
 ```sh
 php artisan test
+composer test:gherkin
 ```
 
-Testele folosesc SQLite în memorie și nu modifică baza de date de dezvoltare.
+Testele PHPUnit și scenariile Gherkin folosesc SQLite în memorie și nu modifică baza de date de dezvoltare. Scenariile executabile sunt în `features/blog.feature` și folosesc Behat.
 
 ## Notă
 
