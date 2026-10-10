@@ -1,6 +1,6 @@
 # DataShield Blog
 
-Blog educațional în limba română despre securitate digitală și protecția datelor personale. Aplicația folosește Laravel 12, Blade, Bootstrap 5.3, Bootstrap Icons, Vite și MySQL.
+Blog educațional în limba română despre securitate digitală și protecția datelor personale. Aplicația folosește Laravel 12, Blade, Bootstrap 5.3, Bootstrap Icons, SCSS compilat prin Vite și MySQL.
 
 ## Cerințe
 
