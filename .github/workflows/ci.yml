@@ -22,7 +22,9 @@ jobs:
         with:
           php-version: '8.3'
           tools: composer
-      - run: composer audit --locked
+      # Behat depends on behat/transliterator, which is abandoned but has no
+      # replacement. Keep reporting it without treating abandonment as a CVE.
+      - run: composer audit --locked --abandoned=report
 
   npm-audit:
     name: npm security audit
