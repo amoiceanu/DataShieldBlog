@@ -46,6 +46,17 @@ composer test:gherkin
 
 Testele PHPUnit și scenariile Gherkin folosesc SQLite în memorie și nu modifică baza de date de dezvoltare. Scenariile executabile sunt în `features/blog.feature` și folosesc Behat.
 
+## CI și deployment
+
+Workflow-ul GitHub Actions din `.github/workflows/ci.yml` rulează la fiecare pull request și push pe `main`:
+
+- audit Composer pentru dependențele PHP blocate în `composer.lock`;
+- audit npm, care oprește build-ul pentru vulnerabilități high sau critical;
+- compilarea resurselor frontend cu `npm run build`;
+- PHPUnit cu Xdebug și prag minim de acoperire de 70%, plus scenariile Gherkin.
+
+Pentru ca aceste verificări să fie obligatorii înainte de integrarea pull request-urilor, configurează în GitHub branch protection/ruleset pentru `main` și cere verificările `Composer security audit`, `npm security audit`, `Compile frontend assets` și `PHPUnit, coverage, and Gherkin`.
+
 ## Notă
 
 Conținutul publicat are scop educativ și informativ și nu reprezintă consultanță juridică sau de securitate informatică personalizată. Textele despre confidențialitate și cookie-uri sunt puncte de pornire, nu documente juridice definitive.
