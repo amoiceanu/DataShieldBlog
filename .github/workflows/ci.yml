@@ -54,6 +54,7 @@ jobs:
     name: PHPUnit, coverage, and Gherkin
     runs-on: ubuntu-latest
     env:
+      APP_KEY: base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
       XDEBUG_MODE: coverage
     steps:
       - uses: actions/checkout@v4
