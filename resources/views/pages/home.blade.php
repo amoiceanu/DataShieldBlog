@@ -8,7 +8,7 @@
         <h1>Protejează-ți viața <span>online.</span></h1>
         <p>Ghiduri practice despre securitate online, protecția datelor personale, phishing, fraude digitale și confidențialitate.</p>
         <div class="hero-actions">
-            <a class="btn btn-primary" href="{{ route('articles.index', ['categorie' => 'ghiduri']) }}">Citește ghidurile <i class="bi bi-arrow-right"></i></a>
+            <a class="btn btn-primary" href="{{ $categories->firstWhere('slug', 'ghiduri-practice') ? route('sections.show', 'ghiduri-practice') : route('articles.index') }}">Citește ghidurile <i class="bi bi-arrow-right"></i></a>
             <a class="btn btn-outline-light" href="#ultimele">Cele mai noi articole</a>
         </div>
         <div class="trust-note"><i class="bi bi-check-circle-fill"></i> Sfaturi clare. Mai mult control. Mai multă siguranță.</div>
@@ -35,7 +35,7 @@
         <div class="category-grid">
             @php($icons = ['bi-shield-check','bi-person-vcard','bi-envelope-exclamation','bi-key','bi-people','bi-eye-slash','bi-exclamation-triangle','bi-journal-check'])
             @foreach($categories as $index => $category)
-                <a class="category-tile" href="{{ route('articles.index', ['categorie' => $category->slug]) }}"><i class="bi {{ $icons[$index % count($icons)] }}"></i><span>{{ $category->name }}</span><i class="bi bi-arrow-up-right arrow"></i></a>
+                <a class="category-tile" href="{{ route('sections.show', $category->slug) }}"><i class="bi {{ $icons[$index % count($icons)] }}"></i><span>{{ $category->name }}</span><i class="bi bi-arrow-up-right arrow"></i></a>
             @endforeach
         </div>
     </div>

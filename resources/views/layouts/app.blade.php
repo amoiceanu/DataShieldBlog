@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Securitate Digitală — Protejează-ți viața online.')</title>
     <meta name="description" content="@yield('description', 'Securitate Digitală oferă ghiduri practice despre protecția datelor personale, phishing, fraude online, parole, autentificare și siguranță digitală.')">
-    <link rel="canonical" href="https://securitatedigitala.ro{{ request()->getPathInfo() === '/' ? '' : request()->getPathInfo() }}">
+    @hasSection('robots')<meta name="robots" content="@yield('robots')">@endif
+    <link rel="canonical" href="@yield('canonical', 'https://securitatedigitala.ro'.(request()->getPathInfo() === '/' ? '/' : request()->getPathInfo()))">
     <link rel="icon" type="image/svg+xml" href="{{ asset('images/securitate-digitala-icon.svg') }}">
     <meta property="og:site_name" content="Securitate Digitală">
     <meta property="og:title" content="@yield('title', 'Securitate Digitală — Protejează-ți viața online.')">
