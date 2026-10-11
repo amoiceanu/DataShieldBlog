@@ -13,10 +13,19 @@ use Illuminate\View\View;
 
 class ArticleController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
+        $categoryId = $request->integer('sectiune');
+        $category = $categoryId > 0 ? Category::find($categoryId) : null;
+        $articles = Article::with('category')->latest('updated_at');
+
+        if ($category !== null) {
+            $articles->where('category_id', $category->id);
+        }
+
         return view('admin.articles.index', [
-            'articles' => Article::with('category')->latest('updated_at')->paginate(15),
+            'articles' => $articles->paginate(15)->withQueryString(),
+            'filteredCategory' => $category,
         ]);
     }
 

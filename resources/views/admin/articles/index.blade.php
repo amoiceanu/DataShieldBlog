@@ -1,7 +1,7 @@
 @extends('admin.layout')
 @section('title', 'Articole — Administrare')
 @section('content')
-<div class="admin-heading"><div><h1>Articole</h1><p>Gestionează articolele publice și drafturile.</p></div><a class="admin-button primary" href="{{ route('admin.articole.create') }}"><i class="bi bi-plus-lg"></i> Articol nou</a></div>
+<div class="admin-heading"><div><h1>Articole</h1><p>@if($filteredCategory)Articole din secțiunea {{ $filteredCategory->name }}. @else Gestionează articolele publice și drafturile. @endif</p>@if($filteredCategory)<a class="admin-table-link" href="{{ route('admin.articole.index') }}">Vezi toate articolele</a>@endif</div><a class="admin-button primary" href="{{ route('admin.articole.create') }}"><i class="bi bi-plus-lg"></i> Articol nou</a></div>
 <section class="admin-panel">
     <table class="admin-table"><thead><tr><th>Articol</th><th>Secțiune</th><th>Stare</th><th>Data publicării</th><th>Acțiuni</th></tr></thead><tbody>
         @forelse($articles as $article)
