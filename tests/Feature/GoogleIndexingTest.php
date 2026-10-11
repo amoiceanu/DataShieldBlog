@@ -11,6 +11,7 @@ use App\Models\IndexabilityAuditItem;
 use App\Models\User;
 use App\Services\IndexabilityAuditService;
 use App\Services\PublicSitemap;
+use Database\Seeders\ContentCatalogSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Artisan;
@@ -31,10 +32,10 @@ class GoogleIndexingTest extends TestCase
     {
         $draft = Article::firstOrFail();
         $draft->update(['status' => 'draft']);
-        $this->assertSame(30, Article::count());
-        $this->assertSame(29, Article::where('status', 'published')->count());
-        $this->assertSame(29, Article::where('status', 'published')->whereNotNull('published_at')->whereDate('published_at', '<=', now())->count(), 'today='.now()->toDateTimeString().' first='.Article::where('status', 'published')->first()->published_at.' raw='.Article::where('status', 'published')->value('published_at'));
-        $this->assertSame(45, app(PublicSitemap::class)->entries()->count());
+        $this->assertSame(32, Article::count());
+        $this->assertSame(31, Article::where('status', 'published')->count());
+        $this->assertSame(31, Article::where('status', 'published')->whereNotNull('published_at')->whereDate('published_at', '<=', now())->count(), 'today='.now()->toDateTimeString().' first='.Article::where('status', 'published')->first()->published_at.' raw='.Article::where('status', 'published')->value('published_at'));
+        $this->assertSame(47, app(PublicSitemap::class)->entries()->count());
 
         $response = $this->get('/sitemap.xml', ['User-Agent' => 'Googlebot'])->assertOk();
         $this->assertStringStartsWith('application/xml', $response->headers->get('Content-Type'));
@@ -43,7 +44,7 @@ class GoogleIndexingTest extends TestCase
         $xml = simplexml_load_string($response->getContent());
         $this->assertNotFalse($xml);
         $locations = collect($xml->xpath('//*[local-name()="url"]'))->map(fn ($node) => (string) $node->loc);
-        $this->assertSame(45, $locations->count());
+        $this->assertSame(47, $locations->count());
         $this->assertSame($locations->count(), $locations->unique()->count());
         $this->assertContains('https://securitatedigitala.ro/', $locations->all());
         foreach (['/articole', '/despre', '/contact', '/politica-de-confidentialitate', '/politica-cookies'] as $path) {
@@ -90,6 +91,67 @@ class GoogleIndexingTest extends TestCase
                 ->assertSee('<link rel="canonical" href="'.$canonical.'">', false)
                 ->assertDontSee('noindex', false);
         }
+    }
+
+    public function test_new_romanian_articles_are_complete_public_and_idempotent(): void
+    {
+        $articles = Article::query()
+            ->whereIn('slug', ['cont-facebook-instagram-spart-recuperare', 'telefonul-te-asculta-mit-realitate'])
+            ->with('category')
+            ->orderBy('slug')
+            ->get();
+        $this->assertCount(2, $articles);
+
+        $expected = [
+            'cont-facebook-instagram-spart-recuperare' => ['retele-sociale', 'Redacția Securitate Digitală'],
+            'telefonul-te-asculta-mit-realitate' => ['confidentialitate', 'Redacția Securitate Digitală'],
+        ];
+        foreach ($articles as $article) {
+            [$category, $author] = $expected[$article->slug];
+            $this->assertSame('published', $article->status);
+            $this->assertSame(today()->toDateString(), $article->published_at->toDateString());
+            $this->assertSame($category, $article->category->slug);
+            $this->assertSame($author, $article->author);
+            $this->assertNotEmpty($article->meta_description);
+            $this->assertNotEmpty($article->seo_title);
+            $imagePath = public_path('images/articles/'.$article->image);
+            $this->assertFileExists($imagePath);
+            $imageInfo = getimagesize($imagePath);
+            $this->assertSame(1280, $imageInfo[0]);
+            $this->assertLessThan(250000, filesize($imagePath));
+            $this->assertStringContainsString('Telefon', $article->image_alt);
+
+            preg_match_all('~[\\p{L}\\p{N}]+~u', strip_tags($article->content), $words);
+            $this->assertGreaterThanOrEqual(1300, count($words[0]), $article->slug.' word count');
+            $this->assertLessThanOrEqual(1800, count($words[0]), $article->slug.' word count');
+
+            $response = $this->get(route('articles.show', $article->slug))->assertOk();
+            $html = $response->getContent();
+            preg_match_all('/<h1\\b/i', $html, $h1s);
+            $this->assertCount(1, $h1s[0]);
+            $this->assertStringContainsString('<meta name="description" content="'.$article->meta_description.'">', $html);
+            $this->assertStringContainsString('<meta property="og:image" content="https://securitatedigitala.ro/images/articles/'.$article->image.'">', $html);
+            $this->assertStringContainsString('<meta name="twitter:image" content="https://securitatedigitala.ro/images/articles/'.$article->image.'">', $html);
+            $this->assertStringContainsString('"@type":"Article"', $html);
+            $this->assertStringContainsString('https://securitatedigitala.ro/articole/'.$article->slug, $html);
+            $this->assertStringContainsString($article->image_alt, $html);
+            preg_match_all('/href="\\/articole\\/([^"?#]+)(?:[?#][^"]*)?"/', $html, $internalLinks);
+            foreach ($internalLinks[1] as $targetSlug) {
+                $targetArticle = Article::where('slug', $targetSlug)->first();
+                $this->assertNotNull($targetArticle, 'Internal link target exists: '.$targetSlug);
+                $this->assertSame('published', $targetArticle->status);
+            }
+        }
+
+        $sitemap = $this->get('/sitemap.xml')->assertOk();
+        $sitemap->assertSee('https://securitatedigitala.ro/articole/cont-facebook-instagram-spart-recuperare');
+        $sitemap->assertSee('https://securitatedigitala.ro/articole/telefonul-te-asculta-mit-realitate');
+
+        $countBeforeReseed = Article::count();
+        $this->seed(ContentCatalogSeeder::class);
+        $this->assertSame($countBeforeReseed, Article::count());
+        $this->assertSame(1, Article::where('slug', 'cont-facebook-instagram-spart-recuperare')->count());
+        $this->assertSame(1, Article::where('slug', 'telefonul-te-asculta-mit-realitate')->count());
     }
 
     public function test_robots_txt_allows_public_crawling_and_advertises_the_sitemap(): void
@@ -147,9 +209,9 @@ class GoogleIndexingTest extends TestCase
         $audit = app(IndexabilityAuditService::class)->run(IndexabilityAudit::create(['status' => 'queued']));
 
         $this->assertSame('completed', $audit->status);
-        $this->assertSame(41, $audit->items->count());
-        $this->assertSame(41, $audit->items->where('local_status', 'eligible')->count());
-        $this->assertSame(41, $audit->items->where('discovered', true)->count());
+        $this->assertSame(43, $audit->items->count());
+        $this->assertSame(43, $audit->items->where('local_status', 'eligible')->count());
+        $this->assertSame(43, $audit->items->where('discovered', true)->count());
         $this->assertSame(0, $audit->summary['technical_problems']);
     }
 

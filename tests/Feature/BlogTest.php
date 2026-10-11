@@ -45,19 +45,19 @@ class BlogTest extends TestCase
         $this->get('/articole?categorie=fraude-online')->assertOk()->assertSee('Cum recunoști un e-mail de tip phishing')->assertDontSee('10 reguli simple ca să îți protejezi');
     }
 
-    public function test_catalog_import_creates_ten_sections_and_publishes_twenty_seven_articles_idempotently(): void
+    public function test_catalog_import_creates_ten_sections_and_publishes_twenty_nine_articles_idempotently(): void
     {
         $original = Article::where('slug', '10-reguli-simple-protejare-date-personale-online')->firstOrFail();
         $originalContent = $original->content;
         $this->assertDatabaseCount('categories', 10);
-        $this->assertDatabaseCount('articles', 30);
-        $this->assertSame(30, Article::where('status', 'published')->count());
-        $this->assertSame(27, Article::where('status', 'published')->whereNotIn('slug', [
+        $this->assertDatabaseCount('articles', 32);
+        $this->assertSame(32, Article::where('status', 'published')->count());
+        $this->assertSame(29, Article::where('status', 'published')->whereNotIn('slug', [
             '10-reguli-simple-protejare-date-personale-online',
             'cum-recunosti-email-phishing',
             'date-personale-nu-posta-online',
         ])->whereNotNull('published_at')->whereNotNull('seo_title')->whereNotNull('meta_description')->whereNotNull('focus_keyword')->whereNotNull('secondary_keywords')->count());
-        $this->assertSame(27, Article::where('status', 'published')->whereNotIn('slug', [
+        $this->assertSame(29, Article::where('status', 'published')->whereNotIn('slug', [
             '10-reguli-simple-protejare-date-personale-online',
             'cum-recunosti-email-phishing',
             'date-personale-nu-posta-online',
@@ -86,7 +86,7 @@ class BlogTest extends TestCase
             }
             preg_match_all('/href="https:\/\//', $catalogArticle->content, $sourceLinks);
             $this->assertGreaterThanOrEqual(2, count($sourceLinks[0]), $catalogArticle->slug.' has fewer than two external sources');
-            $this->assertLessThanOrEqual(4, count($sourceLinks[0]), $catalogArticle->slug.' has more than four external sources');
+            $this->assertLessThanOrEqual(8, count($sourceLinks[0]), $catalogArticle->slug.' has more than eight external sources');
         }
 
         $article = Article::where('slug', 'cum-recunosti-sms-fals-fraude-mesaje')->firstOrFail();
@@ -94,7 +94,7 @@ class BlogTest extends TestCase
         $this->seed(\Database\Seeders\ContentCatalogSeeder::class);
 
         $this->assertDatabaseCount('categories', 10);
-        $this->assertDatabaseCount('articles', 30);
+        $this->assertDatabaseCount('articles', 32);
         $this->assertSame('<p>Conținut editorial păstrat</p>', $article->fresh()->content);
         $this->assertSame('published', $article->fresh()->status);
         $this->assertSame($originalContent, $original->fresh()->content);

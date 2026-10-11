@@ -48,7 +48,7 @@ class ContentCatalogSeeder extends Seeder
                     'title' => $data['title'],
                     'excerpt' => $data['excerpt'],
                     'content' => $content,
-                    'image' => null,
+                    'image' => $data['image'] ?? null,
                     'author' => 'Redacția Securitate Digitală',
                     'published_at' => today()->toDateString(),
                     'reading_time' => $data['reading_time'],
@@ -62,6 +62,10 @@ class ContentCatalogSeeder extends Seeder
 
                 if ($article->status !== 'published' || ! $article->published_at || $article->published_at->isAfter(today())) {
                     $article->update(['status' => 'published', 'published_at' => today()->toDateString()]);
+                }
+
+                if (! $article->image && ! empty($data['image'])) {
+                    $article->update(['image' => $data['image']]);
                 }
             }
 
@@ -543,6 +547,104 @@ HTML,
 HTML,
             ],
             [
+                'title' => 'Telefonul tău te ascultă? Ce este mit și ce este realitate',
+                'slug' => 'telefonul-te-asculta-mit-realitate', 'category' => 'confidentialitate',
+                'excerpt' => 'Reclamele care par să răspundă unei conversații nu dovedesc singure că telefonul a înregistrat-o. Vezi ce pot face microfonul, asistenții vocali și sistemele de publicitate și cum verifici permisiunile pe Android și iPhone.',
+                'seo_title' => 'Telefonul te ascultă? Mituri despre reclame și microfon',
+                'meta_description' => 'De ce vezi reclame despre lucruri pe care le-ai discutat? Află cum funcționează publicitatea personalizată și cum îți protejezi confidențialitatea.',
+                'focus_keyword' => 'telefonul mă ascultă', 'secondary_keywords' => ['telefonul ascultă conversațiile', 'reclame personalizate', 'microfon Android', 'microfon iPhone', 'confidențialitate telefon'],
+                'reading_time' => 8, 'image' => 'telefon-microfon-privacy.jpg',
+                'related' => ['cum-reduci-urmarirea-pe-internet', 'ce-stie-google-despre-tine-control-date', 'cum-verifici-permisiuni-aplicatii-telefon', 'securizare-telefon-android-iphone', 'date-personale-nu-posta-online'],
+                'sources' => [
+                    ['Android Help: schimbarea permisiunilor aplicațiilor', 'https://support.google.com/android/answer/9431959?hl=ro'],
+                    ['Android Help: verificarea istoricului din Privacy Dashboard', 'https://support.google.com/android/answer/13530434?hl=ro'],
+                    ['Apple Support: controlul accesului la microfon pe iPhone', 'https://support.apple.com/en-euro/guide/iphone/iph6e7d349d1/26/ios/26'],
+                    ['Apple Support: raportul de confidențialitate al aplicațiilor', 'https://support.apple.com/en-ie/102188'],
+                    ['Google My Ad Center: controlul reclamelor personalizate', 'https://support.google.com/My-Ad-Center-Help/answer/12155154?hl=ro'],
+                    ['Android Help: setările de publicitate și Topics', 'https://support.google.com/android/answer/13720755?hl=ro'],
+                    ['Apple Support: controale pentru urmărirea între aplicații', 'https://support.apple.com/en-ie/guide/iphone/iph4f4cbd242/ios'],
+                ],
+                'content' => <<<'HTML'
+<p>Poate ai vorbit despre un produs, iar mai târziu ai văzut o reclamă pentru el. Experiența pare personală și poate ridica întrebarea: „Telefonul mă ascultă?”. O reclamă potrivită nu dovedește însă că microfonul a înregistrat conversația. Publicitatea poate folosi căutări, pagini vizitate, aplicații, interacțiuni, locație aproximativă, informații de cont sau activitatea altor dispozitive conectate. Uneori explicația este mai simplă: ai remarcat reclama tocmai fiindcă subiectul era recent în mintea ta.</p>
+<h2>Poate un smartphone să acceseze conversațiile?</h2>
+<p>Da, hardware-ul telefonului poate capta sunet, iar o aplicație cu permisiunea potrivită poate folosi microfonul în situațiile permise de sistem și de setările dispozitivului. Apelurile video, mesajele vocale, dictarea și înregistrarea audio sunt exemple obișnuite. Asistenții vocali pot aștepta o comandă de activare; implementarea și prelucrarea diferă între produse. Nu presupune că orice funcție este procesată numai local sau, invers, că fiecare conversație este transmisă în permanență către un server. Consultă setările și documentația asistentului pe care îl folosești.</p>
+<p>Accesul la microfon depinde de permisiunile sistemului, versiunea Android ori iOS și comportamentul aplicației. Sistemele moderne oferă controale și indicatori, dar denumirile și nivelul de detaliu pot varia. Un indicator arată activitate a senzorului; singur, el nu spune ce conținut a fost păstrat sau trimis. Dacă observi acces neașteptat, verifică raportul sistemului, aplicația și momentul înainte de a trage concluzii.</p>
+
+<h2>Microfon, asistent vocal și publicitate: trei lucruri diferite</h2>
+<p><strong>Permisiunea pentru microfon</strong> este o decizie a sistemului de operare care permite unei aplicații să ceară acces la intrarea audio. Permisiunea poate fi refuzată sau retrasă. Ea nu este o dovadă că aplicația folosește microfonul în orice moment și nici că înregistrările sunt folosite pentru reclame.</p>
+<p><strong>Asistentul vocal</strong> răspunde unei comenzi, precum activarea printr-o frază sau apăsarea unui buton. Un dispozitiv poate analiza un semnal audio pentru a detecta comanda, iar un serviciu poate procesa cererea după activare, în funcție de produs și setări. Verifică istoricul comenzilor și controalele vocale din contul asistentului; oprește activarea vocală dacă nu o folosești.</p>
+<p><strong>Publicitatea personalizată</strong> poate folosi activitatea asociată conturilor, interesele selectate, istoricul unor interacțiuni, informații furnizate și semnale din site-uri sau aplicații, după setările și politicile aplicabile. De exemplu, Google descrie folosirea activității din servicii și a preferințelor din My Ad Center pentru anumite reclame. Alte platforme și aplicații au propriile sisteme și controale. Aceste practici documentate nu sunt același lucru cu înregistrarea conversațiilor ambientale.</p>
+
+<h2>Ce dovezi avem despre ascultarea pentru reclame?</h2>
+<p>Faptul că o aplicație cere permisiune la microfon arată că poate avea nevoie de funcția audio; nu demonstrează că înregistrează continuu sau că folosește sunetul pentru a selecta reclame. În mod similar, o reclamă potrivită după o conversație nu identifică de una singură sursa semnalului. Pentru o concluzie tehnică ar fi nevoie de date verificabile despre accesul la senzor, traficul transmis și prelucrarea făcută de aplicație, nu doar de o coincidență observată.</p>
+<p>Raportul de confidențialitate al iPhone-ului și Privacy Dashboard pe Android pot indica ce aplicație a accesat microfonul și când, pe versiunile care oferă aceste funcții. Un acces în timpul unui apel este de așteptat; unul neașteptat merită investigat. Jurnalul nu îți spune automat ce s-a întâmplat cu sunetul după acces și nici nu identifică singur motivul unei reclame.</p>
+<p>Nu există temei să afirmăm ca fapt general că Facebook, Google, Apple sau orice alt furnizor înregistrează în secret toate conversațiile pentru reclame. Asta nu face imposibilă orice utilizare abuzivă a microfonului de către o aplicație. Dacă ai o suspiciune concretă, notează ora, aplicația și indicatorul observat, revizuiește permisiunile și raportează comportamentul prin canalul platformei sau al magazinului de aplicații.</p>
+
+<h2>Cum funcționează de fapt reclamele personalizate</h2>
+<p>Platformele pot folosi activitatea contului pentru a estima ce subiecte te interesează: căutări, clipuri vizionate, reclame cu care ai interacționat, informații de profil sau activitate salvată din servicii partenere, în funcție de cont și de setări. Un site poate folosi propriile cookies și instrumente de măsurare. Aplicațiile pot avea identificatori publicitari sau controale pentru subiecte de interes. O companie poate afișa reclame contextuale bazate pe pagina pe care o citești, fără să știe ce ai discutat acasă.</p>
+<p>Cookie-urile și tehnologii similare pot ajuta la menținerea unei sesiuni, măsurarea vizitelor sau personalizarea conținutului. Dacă ești autentificat, activitatea poate fi asociată contului în limitele politicilor și setărilor serviciului. Unele aplicații schimbă semnale prin SDK-uri de publicitate sau analiză; politicile magazinului și ale sistemului limitează anumite practici, dar nu toate aplicațiile sunt identice. Citește etichetele de confidențialitate, permisiunile și explicațiile dezvoltatorului.</p>
+<h2>De ce o reclamă poate părea suspect de exactă?</h2>
+<p>În primul rând, uităm zecile de reclame care nu au legătură cu discuțiile noastre și le ținem minte pe cele care se potrivesc. Aceasta este o explicație posibilă, nu o dovadă despre cazul fiecăruia. În al doilea rând, poate ai căutat produsul, ai urmărit un clip, ai vizitat un magazin online sau ai discutat într-o aplicație despre care nu îți amintești. Uneori recomandarea este contextuală: reclama apare pe o pagină despre același subiect.</p>
+
+<h2>Cum verifici permisiunea de microfon pe Android</h2>
+<ol>
+<li>Deschide <strong>Setări</strong> și caută „Permisiuni”, „Microfon” sau „Privacy Dashboard”. Pe multe dispozitive, calea este <strong>Securitate și confidențialitate → Confidențialitate → Manager de permisiuni → Microfon</strong>; pe altele poate fi <strong>Aplicații → [numele aplicației] → Permisiuni</strong>.</li>
+<li>Revizuiește aplicațiile cu acces permis. Pentru fiecare, întreabă-te dacă funcția are nevoie de microfon, de exemplu apeluri, dictare sau filmare.</li>
+<li>Deschide Privacy Dashboard pentru istoricul accesărilor dacă versiunea ta de Android îl include. Google indică faptul că intervalul vizibil diferă în funcție de versiune.</li>
+<li>Schimbă accesul la „Permite doar când folosești aplicația”, „Întreabă de fiecare dată” sau „Nu permite”, după opțiunile oferite.</li>
+<li>Pe unele telefoane poți opri accesul general la microfon din controalele de confidențialitate rapide. Meniurile depind de producător și de versiunea sistemului.</li>
+</ol>
+<p>Ghidul nostru despre <a href="/articole/cum-verifici-permisiuni-aplicatii-telefon">verificarea permisiunilor aplicațiilor</a> explică și alte controale utile. Dacă dezactivezi microfonul pentru o aplicație de apeluri, funcția audio nu va merge până nu îi redai accesul.</p>
+
+<h2>Cum verifici permisiunea de microfon pe iPhone</h2>
+<ol>
+<li>Deschide <strong>Configurări → Intimitate și securitate → Microfon</strong> și revizuiește aplicațiile care au cerut acces. Poți opri permisiunea separat pentru fiecare aplicație.</li>
+<li>Un indicator portocaliu în bara de stare arată că microfonul este folosit; indicatorul verde apare când este folosită camera, singură sau împreună cu microfonul. Deschide Centrul de control pentru a vedea ce aplicație a folosit recent senzorul.</li>
+<li>Activează <strong>Raportul de confidențialitate al aplicațiilor</strong> în Configurări → Intimitate și securitate. Acesta începe să colecteze date după activare și poate afișa accesul la senzori și activitatea de rețea recentă.</li>
+<li>În <strong>Configurări → Intimitate și securitate → Urmărire</strong>, revizuiește ce aplicații au cerut permisiunea de urmărire între aplicații și site-uri ale altor companii. Poți modifica deciziile sau opri solicitările viitoare.</li>
+</ol>
+<p>Indicatorul confirmă accesarea senzorului, nu motivul; compară ora cu funcția folosită și oprește permisiunea dacă accesul rămâne neexplicat.</p>
+
+<h2>Dezactivează accesul inutil, nu funcțiile de care depinzi</h2>
+<p>Retrage microfonul aplicațiilor care nu au nevoie de audio și testează dacă restul funcțiilor continuă să meargă. Dezinstalează aplicații pe care nu le mai folosești și instalează programe doar din magazinele oficiale. Verifică numele dezvoltatorului, actualizările și politica de confidențialitate. Evită aplicațiile care cer microfon pentru o funcție care nu are legătură cu sunetul și nu instala fișiere de configurare trimise de necunoscuți.</p>
+<p>Acordă acces temporar dacă sistemul oferă opțiunea. Retragerea permisiunii nu șterge înregistrările deja încărcate; verifică setările contului și politica furnizorului pentru acestea.</p>
+
+<h2>Redu urmărirea reclamelor</h2>
+<ul>
+<li>Revizuiește setările de reclame din conturile folosite, precum My Ad Center pentru serviciile Google, și oprește personalizarea dacă nu o dorești. Vei putea vedea în continuare reclame contextuale sau prin alte rețele.</li>
+<li>Pe Android, verifică setările de confidențialitate pentru reclame și identificatorul publicitar; pe iPhone, gestionează solicitările din secțiunea Urmărire. Denumirile și opțiunile depind de versiune și cont.</li>
+<li>În browser, limitează cookies de la terți, șterge datele site-urilor pe care nu le mai folosești și verifică protecția împotriva trackerelor. Așteaptă-te ca unele sesiuni să se închidă.</li>
+<li>Refuză permisiunile de locație și contacte când nu sunt necesare. Oprește sincronizarea pe dispozitive partajate și deconectează conturile pe care nu le folosești.</li>
+<li>Folosește parole unice și verifică aplicațiile terțe conectate la conturile tale. Pentru mai multe măsuri, citește ghidul nostru despre <a href="/articole/cum-reduci-urmarirea-pe-internet">reducerea urmăririi online</a>.</li>
+</ul>
+
+<h2>Listă practică pentru confidențialitatea telefonului</h2>
+<ul>
+<li>Revizuiește permisiunea de microfon și elimină accesul aplicațiilor care nu îl folosesc justificat.</li>
+<li>Verifică indicatorii de microfon și istoricul senzorilor după ce instalezi aplicații noi.</li>
+<li>Oprește asistentul vocal sau activarea la comandă dacă nu folosești funcția.</li>
+<li>Controlează personalizarea reclamelor în conturi, sistemul de operare și aplicațiile folosite.</li>
+<li>Limitează cookies, identificatorii publicitari, locația și accesul la contacte în funcție de nevoie.</li>
+<li>Actualizează sistemul și aplicațiile și elimină programele necunoscute.</li>
+<li>Verifică periodic politica de confidențialitate și opțiunile după actualizări importante.</li>
+</ul>
+
+<h2>Întrebări frecvente</h2>
+<h3>Telefonul ascultă mereu conversațiile pentru reclame?</h3>
+<p>O reclamă potrivită nu dovedește că telefonul a înregistrat conversația. Sistemele și aplicațiile pot accesa microfonul în condiții permise, dar nu avem bază să afirmăm că toate conversațiile sunt înregistrate în mod obișnuit pentru reclame. Verifică accesul la senzor și setările platformei.</p>
+<h3>Pot opri complet accesul aplicațiilor la microfon?</h3>
+<p>Poți retrage permisiunea fiecărei aplicații și, pe unele versiuni Android, poți opri global microfonul. Apelurile, mesajele vocale și filmarea nu vor putea capta audio cât timp accesul este blocat.</p>
+<h3>Ce înseamnă punctul portocaliu de pe iPhone?</h3>
+<p>El indică folosirea microfonului. Punctul verde indică folosirea camerei, singură sau împreună cu microfonul. Centrul de control poate arăta aplicația care a folosit recent senzorul.</p>
+<h3>De ce văd reclame despre un produs pe care doar l-am menționat?</h3>
+<p>Pot exista mai multe explicații: activitate online anterioară, reclame contextuale, conturi ori dispozitive partajate, interese estimate sau simpla atenție sporită față de subiect. Reclama singură nu identifică sursa semnalului.</p>
+<h3>Dacă opresc reclamele personalizate, nu mai văd reclame?</h3>
+<p>Nu. De regulă vei vedea în continuare reclame contextuale sau reclame oferite de alte platforme, însă anumite activități și preferințe nu vor mai fi folosite de serviciul respectiv pentru personalizare, în limitele descrise în setările sale.</p>
+<h2>Concluzie</h2>
+<p>Microfonul este o funcție reală, iar aplicațiile pot primi acces când le acorzi permisiunea, dar o reclamă surprinzător de exactă nu demonstrează că ai fost ascultat. Activitatea de cont, istoricul de navigare, cookies, identificatorii publicitari și contextul oferă suficiente explicații posibile pentru personalizare. Verifică permisiunile pe Android sau iPhone, folosește rapoartele de confidențialitate și ajustează separat setările de reclame ale fiecărei platforme. Dacă observi acces neașteptat, investighează aplicația și datele disponibile înainte să concluzionezi ce s-a întâmplat.</p>
+HTML,
+            ],
+            [
                 'title' => 'Este sigur să folosești un VPN? Avantaje și limite',
                 'slug' => 'vpn-sigur-avantaje-si-limite', 'category' => 'confidentialitate',
                 'excerpt' => 'Un VPN criptează tunelul dintre dispozitiv și furnizorul VPN și poate limita ce observă rețeaua locală. Nu ascunde activitatea față de site-urile unde te autentifici și mută o parte din încredere către operatorul VPN.',
@@ -619,6 +721,102 @@ HTML,
 <h2>Dacă pierzi accesul</h2>
 <p>Folosește pagina oficială de recuperare din aplicație sau Help Center și urmează verificările disponibile pentru cont. Acționează de pe un dispozitiv și o rețea folosite anterior, dacă se poate. Cere prietenilor să raporteze profilul compromis și anunță-i prin alt canal să nu trimită bani ori coduri. După recuperare, elimină sesiunile și aplicațiile necunoscute și verifică dacă adresa de e-mail și numărul au fost schimbate.</p>
 <p>Meta poate modifica denumirile funcțiilor și disponibilitatea în funcție de regiune. Dacă meniul s-a schimbat, caută „Security” sau „Account Center” în setările aplicației și folosește linkul de ajutor oficial, nu rezultatele sponsorizate care promit recuperarea contului.</p>
+HTML,
+            ],
+            [
+                'title' => 'Ți-a fost spart contul de Facebook sau Instagram? Iată ce trebuie să faci imediat',
+                'slug' => 'cont-facebook-instagram-spart-recuperare', 'category' => 'retele-sociale',
+                'excerpt' => 'Dacă observi postări, mesaje sau autentificări pe care nu le recunoști, securizează mai întâi e-mailul și contul, apoi folosește recuperarea oficială Facebook sau Instagram. Urmează pașii în ordine, fără să trimiți coduri nimănui.',
+                'seo_title' => 'Cont Facebook sau Instagram spart: pașii de recuperare',
+                'meta_description' => 'Află cum recuperezi un cont Facebook sau Instagram compromis, cum elimini accesul atacatorilor și ce măsuri previn atacurile viitoare.',
+                'focus_keyword' => 'cont Facebook spart', 'secondary_keywords' => ['recuperare cont Facebook', 'cont Instagram hackuit', 'recuperare Instagram', 'cont compromis', 'autentificare în doi pași'],
+                'reading_time' => 8, 'image' => 'cont-facebook-instagram-spart.jpg',
+                'related' => ['securizare-cont-facebook', 'protejeaza-cont-instagram-hackeri', 'autentificare-doi-pasi-cum-activezi', 'cum-creezi-parole-sigure-manager', 'cum-recunosti-email-phishing', 'primele-30-minute-cont-compromis'],
+                'sources' => [
+                    ['Facebook: recuperează un cont compromis', 'https://www.facebook.com/hacked'],
+                    ['Instagram: recuperează un cont compromis', 'https://www.instagram.com/hacked/'],
+                    ['Meta Help Center: conturi Facebook compromise', 'https://www.facebook.com/help/1216349518398524/'],
+                    ['CISA: parole și autentificare multifactor', 'https://www.cisa.gov/secure-our-world'],
+                ],
+                'content' => <<<'HTML'
+<p>Când cineva obține acces neautorizat la un cont Facebook sau Instagram, poate schimba parola ori datele de recuperare, publica în numele tău, citi mesaje private sau trimite cereri de bani celor din lista de prieteni. Uneori atacatorul folosește o sesiune deja conectată, așa că schimbarea parolei nu este întotdeauna singurul pas necesar. Un cont compromis nu înseamnă automat că telefonul este infectat; începe cu protejarea e-mailului și cu instrumentele oficiale ale platformei.</p>
+<p>Dacă ai încă acces, acționează de pe un telefon sau calculator de încredere și tastează tu adresa serviciului în browser. Nu folosi linkuri din mesaje care pretind că sunt de la suport. Urmează pașii de mai jos în ordinea potrivită situației tale. Denumirile meniurilor Facebook și Instagram se pot schimba în funcție de versiunea aplicației, regiune și tipul contului.</p>
+
+<h2>Semne că un cont ar putea fi compromis</h2>
+<p>Verifică dacă au apărut postări, comentarii, reacții sau mesaje pe care nu le-ai scris; dacă prietenii primesc solicitări de bani ori coduri; dacă parola, adresa de e-mail, numărul de telefon sau numele contului au fost schimbate; sau dacă primești alerte de conectare pe care nu le recunoști. Pot apărea și pagini ori reclame pe care nu le-ai creat sau aplicații conectate necunoscute.</p>
+<p>O alertă singură nu dovedește preluarea contului: locația poate fi aproximativă, iar un dispozitiv nou poate fi al tău. Verifică activitatea deschizând direct aplicația sau site-ul oficial. Nu apăsa pe butonul dintr-un e-mail alarmist înainte să confirmi că mesajul este autentic. Dacă bănuiești că și adresa de e-mail este accesată de altcineva, securizeaz-o imediat de pe un dispozitiv de încredere.</p>
+
+<h2>Ce faci imediat dacă încă poți intra în cont</h2>
+<ol>
+<li><strong>Securizează adresa de e-mail asociată.</strong> Schimbă-i parola cu una unică, activează autentificarea în doi pași și verifică adresele și numerele de recuperare. Caută reguli de redirecționare, filtre sau sesiuni pe care nu le-ai configurat. E-mailul este adesea cheia pentru resetarea celorlalte conturi.</li>
+<li><strong>Schimbă parola rețelei sociale.</strong> Alege una lungă, aleatorie și nefolosită în altă parte. Un manager de parole te poate ajuta să o generezi și să o păstrezi. Dacă parola veche a fost refolosită, schimb-o și pe celelalte servicii unde apărea, începând cu e-mailul.</li>
+<li><strong>Verifică datele de contact și metodele de recuperare.</strong> Elimină adresele, numerele și conturile conectate pe care nu le recunoști. Confirmă că datele tale sunt scrise corect și că le poți accesa.</li>
+<li><strong>Revocă accesul necunoscut.</strong> În setările de securitate, verifică sesiunile și dispozitivele conectate, apoi deconectează-le pe cele pe care nu le recunoști. Revizuiește aplicațiile și site-urile terțe autorizate și retrage accesul nefolosit sau suspect.</li>
+<li><strong>Activează autentificarea în doi pași.</strong> Preferă o aplicație de autentificare sau o cheie de securitate dacă sunt disponibile și păstrează codurile de recuperare separat, într-un loc sigur.</li>
+</ol>
+<p>Înainte să închizi o sesiune necunoscută, asigură-te că ai o metodă de recuperare pe care o controlezi. Nu trimite nimănui parola, codul primit prin SMS, codul de autentificare sau codurile de recuperare. Nici o persoană care se prezintă drept angajat al platformei nu ar trebui să aibă nevoie de ele.</p>
+
+<h2>Cum recuperezi un cont Facebook</h2>
+<p>Deschide <a href="https://www.facebook.com/hacked" target="_blank" rel="noopener noreferrer">pagina oficială Facebook pentru conturi compromise</a>, de preferat de pe un dispozitiv pe care l-ai folosit înainte pentru autentificare. Introdu datele cerute direct în pagina Facebook și urmează verificările afișate pentru contul tău. Dacă poți încă intra, folosește și opțiunile de securitate ale contului pentru schimbarea parolei, verificarea sesiunilor și confirmarea datelor de contact.</p>
+<p>Dacă nu mai recunoști adresa sau numărul afișat, continuă prin opțiunea de recuperare oferită de pagină. Caută în inboxul adresei originale notificări despre schimbarea datelor contului; dacă mesajul este autentic, folosește numai linkul oficial din acel mesaj. Nu există o metodă care să garanteze recuperarea: platforma poate solicita verificări diferite sau poate limita temporar încercările. Evită serviciile neoficiale care cer bani, parola ori acces la distanță.</p>
+
+<h2>Cum recuperezi un cont Instagram</h2>
+<p>Accesează <a href="https://www.instagram.com/hacked/" target="_blank" rel="noopener noreferrer">fluxul oficial Instagram pentru conturi compromise</a> sau opțiunea de ajutor de pe ecranul de autentificare al aplicației. Introdu numele de utilizator, e-mailul sau numărul solicitat și urmează instrucțiunile afișate atunci. Opțiunile pot varia: ți se poate cere să confirmi o adresă, să primești un link de conectare sau să efectuezi o verificare suplimentară. Folosește doar aplicația și domeniile oficiale.</p>
+<p>Dacă încă poți intra, verifică în zona de securitate activitatea de conectare, sesiunile, metodele de autentificare și aplicațiile conectate. Unele setări se găsesc în Accounts Center, iar denumirile și poziția lor pot diferi între versiunile aplicației. După recuperare, verifică dacă au fost schimbate adresa, numărul, numele de utilizator ori conturile legate. Nu repeta la nesfârșit solicitarea de coduri dacă pagina îți cere să aștepți.</p>
+
+<h2>Dacă atacatorul a schimbat parola sau adresa de e-mail</h2>
+<p>Pornește recuperarea din pagina oficială chiar dacă parola nu mai funcționează. Verifică inboxul și folderul de spam al adresei care era asociată înainte de incident. Unele notificări de securitate pot oferi un pas de contestare, dar verifică expeditorul și destinația linkului înainte să îl deschizi. Dacă nu mai ai acces la e-mail sau la numărul de telefon, folosește opțiunile alternative afișate de platformă; disponibilitatea lor depinde de cont și de verificările aplicabile.</p>
+<p>Dacă e-mailul a fost compromis, recuperează-l prin furnizorul său înainte de a cere noi linkuri de resetare. Altfel, un atacator care îl controlează poate intercepta mesajele. Nu crea un cont nou folosind datele vechi ca substitut pentru recuperare și nu trimite documente decât printr-o cerere autentică, în fluxul securizat al platformei.</p>
+
+<h2>Închide sesiunile necunoscute și verifică aplicațiile</h2>
+<p>După ce ai securizat parola și e-mailul, caută secțiunea de activitate sau dispozitive conectate în setările contului. Deconectează sesiunile pe care nu le recunoști și revocă aplicațiile terțe care nu mai sunt necesare. Dacă lista nu indică clar un dispozitiv, schimbă parola de pe dispozitivul sigur și alege opțiunea de deconectare a celorlalte sesiuni, dacă platforma o oferă. Nu presupune că schimbarea parolei închide automat fiecare sesiune deja activă.</p>
+<p>Verifică și accesul la pagini, conturi profesionale, metode de plată și reclame dacă le administrezi. Elimină administratorii necunoscuți și contactează platforma prin instrumentele oficiale dacă nu poți restabili singur controlul.</p>
+
+<h2>Activează autentificarea în doi pași</h2>
+<p>Autentificarea în doi pași adaugă o confirmare la parolă. Activeaz-o în setările de securitate sau în Accounts Center, folosind o aplicație de autentificare, o cheie de securitate ori altă metodă disponibilă. SMS-ul poate fi mai bun decât lipsa unei protecții suplimentare, însă păstrează numărul de telefon sigur și nu comunica nimănui codurile primite. Salvează codurile de recuperare offline, separat de telefon.</p>
+<p>Parcurge și ghidul nostru despre <a href="/articole/autentificare-doi-pasi-cum-activezi">activarea autentificării în doi pași</a> și articolul despre <a href="/articole/cum-creezi-parole-sigure-manager">parole unice cu un manager de parole</a>. Aceste măsuri reduc riscul, dar nu înlocuiesc verificarea periodică a sesiunilor și a metodelor de recuperare.</p>
+
+<h2>Protejează-ți prietenii și contactele</h2>
+<p>Dacă din cont au plecat mesaje sau postări, anunță contactele printr-un alt canal, de exemplu telefon sau e-mail. Spune-le să ignore cererile de bani, coduri, voturi sau linkuri trimise în perioada respectivă și să nu descarce fișierele primite. Cere-le să raporteze mesajele sau profilul dacă instrumentele platformei oferă această opțiune. Dacă cineva a trimis deja bani, roagă-l să contacteze imediat banca sau furnizorul de plată.</p>
+<p>După ce recapeți contul, șterge conținutul fraudulos, verifică mesajele trimise și postează o informare clară. Nu publica capturi care expun parole, coduri, adrese private sau datele de contact ale altor persoane. Dacă atacatorul a accesat conversații private, avertizează persoanele vizate fără să redistribui conținutul sensibil.</p>
+
+<h2>Greșeli frecvente de evitat</h2>
+<ul>
+<li>Nu plăti persoane care promit recuperarea garantată și nu le oferi parola ori codurile.</li>
+<li>Nu instala aplicații de control la distanță și nu trimite copii de acte în afara unei verificări oficiale.</li>
+<li>Nu folosi linkuri din mesaje nesolicitate despre suspendare, copyright sau verificarea insignelor.</li>
+<li>Nu schimba toate setările simultan de pe un dispozitiv posibil compromis; folosește unul actualizat și de încredere.</li>
+<li>Nu șterge imediat e-mailurile de alertă sau mesajele frauduloase; păstrează dovezile necesare recuperării și raportării.</li>
+</ul>
+<p>Dacă ai deschis un link de phishing, citește și ghidul nostru despre <a href="/articole/ce-faci-dupa-link-phishing">pașii de făcut după accesarea unui link suspect</a>. Dacă ai pierdut accesul la mai multe conturi, urmează și planul pentru <a href="/articole/primele-30-minute-cont-compromis">primele minute după compromiterea unui cont</a>.</p>
+
+<h2>Listă de verificare pentru prevenție</h2>
+<ul>
+<li>Folosește parole unice pentru contul social și adresa de e-mail asociată.</li>
+<li>Activează autentificarea în doi pași și păstrează codurile de recuperare într-un loc sigur.</li>
+<li>Verifică periodic sesiunile, numerele și adresele de recuperare.</li>
+<li>Elimină aplicațiile conectate pe care nu le mai folosești.</li>
+<li>Activează notificările pentru conectări noi, dacă sunt disponibile.</li>
+<li>Ține sistemul de operare, browserul și aplicațiile actualizate.</li>
+<li>Nu comunica parole sau coduri și confirmă cererile neobișnuite prin alt canal.</li>
+</ul>
+
+<h2>Întrebări frecvente</h2>
+<h3>Pot recupera un cont dacă atacatorul a schimbat adresa de e-mail?</h3>
+<p>Începe recuperarea din fluxul oficial Facebook sau Instagram și verifică notificările trimise la adresa folosită anterior. Platforma poate oferi verificări suplimentare, însă pașii depind de cont și nu există garanția recuperării.</p>
+<h3>Schimbarea parolei deconectează atacatorul?</h3>
+<p>Poate opri folosirea parolei vechi, dar verifică separat sesiunile și dispozitivele conectate. Închide accesul necunoscut din setările oficiale și revizuiește aplicațiile terțe.</p>
+<h3>Este sigur să folosesc o firmă care promite recuperarea contului?</h3>
+<p>Nu îi da parola, coduri, bani sau acces la distanță. Folosește paginile oficiale și evită recuperatorii neafiliați; nicio persoană externă nu poate garanta rezultatul procesului Meta.</p>
+<h3>Trebuie să șterg aplicația de pe telefon?</h3>
+<p>Nu automat. Actualizează aplicația din magazinul oficial și securizează mai întâi e-mailul și contul. Dacă suspectezi și compromiterea dispozitivului, cere ajutor tehnic de încredere și nu instala instrumente trimise de necunoscuți.</p>
+<h3>Ce fac dacă prietenii au primit cereri de bani?</h3>
+<p>Anunță-i imediat printr-un canal diferit și cere-le să nu plătească. Dacă au trimis deja bani, trebuie să contacteze banca sau serviciul de plată cât mai repede și să păstreze conversațiile și detaliile tranzacției.</p>
+<h3>Autentificarea în doi pași garantează că nu voi fi atacat?</h3>
+<p>Nu. Ea adaugă o barieră importantă, dar trebuie să protejezi și e-mailul, să verifici sesiunile și să nu aprobi solicitări sau coduri pe care nu le-ai cerut.</p>
+
+<h2>Concluzie</h2>
+<p>În cazul unui cont Facebook sau Instagram compromis, protejează întâi e-mailul și folosește instrumentul oficial de recuperare, apoi schimbă parola, verifică datele de contact și închide sesiunile necunoscute. Anunță contactele dacă au fost trimise mesaje frauduloase și nu promite nimănui recuperarea sigură. După ce recapeți accesul, activează autentificarea în doi pași și păstrează metodele de recuperare actuale.</p>
 HTML,
             ],
             [
