@@ -8,9 +8,9 @@ Feature: Securitate Digitală
     And the page should contain "Protejează-ți viața"
 
   Scenario: Search finds a published catalog article
-    When I search articles for "conturilor de social media"
+    When I search articles for "Facebook"
     Then the response status should be 200
-    And the page should contain "Cum îți protejezi conturile de social media"
+    And the page should contain "Cum îți securizezi contul de Facebook"
 
   Scenario: Search finds a phishing guide
     When I search articles for "phishing"
