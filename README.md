@@ -34,10 +34,21 @@ php artisan serve
 
 Pe Windows, copiază `.env.example` în `.env` din PowerShell cu `Copy-Item .env.example .env`.
 
+## Administrare
+
+După migrare, creează un cont administrator din terminal. Comanda cere numele, e-mailul și o parolă de cel puțin 12 caractere:
+
+```sh
+php artisan admin:create
+```
+
+Autentificarea este la `/admin/login`. Din panoul `/admin/articole` poți crea, edita și șterge articole, le poți păstra ca draft sau publica și poți programa data publicării. Secțiunile se gestionează din `/admin/sectiuni`. Doar articolele publicate cu data ajunsă apar pe site și în sitemap.
+
 ## Funcționalități
 
 - Pagina principală, index cu căutare, filtrare și paginare și pagini individuale de articol
 - Categorii și trei articole introductive încărcate prin seeder
+- Panou administrativ protejat pentru articole și secțiuni, cu drafturi și publicare programată
 - Formular de contact cu validare, acord de confidențialitate, limitare de cereri și honeypot
 - Pagini despre proiect, confidențialitate și cookie-uri
 - Sitemap XML, robots.txt, metadate Open Graph, canonical URLs și schema JSON-LD pentru articole
@@ -57,6 +68,8 @@ Testele PHPUnit și scenariile Gherkin folosesc SQLite în memorie și nu modifi
 Workflow-ul GitHub Actions din `.github/workflows/ci.yml` rulează la fiecare pull request și push pe `main`: audit Composer și npm, compilarea asset-urilor, PHPUnit cu prag minim de acoperire de 70% și scenariile Gherkin.
 
 Pentru ca verificările să fie obligatorii la integrarea pull request-urilor, configurează branch protection/ruleset în GitHub pentru `main` și cere verificările `Composer security audit`, `npm security audit`, `Compile frontend assets` și `PHPUnit, coverage, and Gherkin`.
+
+Deploy-ul pornește doar la push pe `main`, după toate cele patru joburi CI. Configurează în **Settings → Secrets and variables → Actions** secretele `DEPLOY_USER` (utilizatorul SSH), `DEPLOY_PATH` (calea absolută a clonei Laravel de pe droplet), `DEPLOY_SSH_KEY` (cheia privată cu cheia publică instalată în `authorized_keys`) și `DEPLOY_KNOWN_HOSTS` (cheia hostului verificată pentru `165.22.88.77`). Runnerul trimite build-ul frontend verificat; dropletul trebuie să aibă PHP, Composer și acces SSH, dar nu are nevoie de Node.js. `.env` și permisiunile directorului `storage` trebuie configurate deja pe server.
 
 ## Notă
 

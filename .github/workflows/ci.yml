@@ -10,7 +10,7 @@ permissions:
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   composer-audit:
@@ -49,6 +49,12 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: production-assets
+          path: public/build/
+          if-no-files-found: error
+          retention-days: 1
 
   php-tests:
     name: PHPUnit, coverage, and Gherkin
@@ -68,3 +74,77 @@ jobs:
       - run: vendor/bin/phpunit --coverage-clover=coverage.xml
       - run: php scripts/check-coverage.php coverage.xml 70
       - run: composer test:gherkin
+
+  deploy:
+    name: Deploy production
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [composer-audit, npm-audit, asset-build, php-tests]
+    runs-on: ubuntu-latest
+    concurrency:
+      group: securitate-digitala-production
+      cancel-in-progress: false
+    env:
+      DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+      DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+      DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+    steps:
+      - name: Validate deployment secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in DEPLOY_USER DEPLOY_PATH DEPLOY_SSH_KEY DEPLOY_KNOWN_HOSTS; do
+            if [[ -z "${!name:-}" ]]; then
+              echo "Missing required GitHub Actions secret: ${name}" >&2
+              exit 1
+            fi
+          done
+          [[ "$DEPLOY_USER" =~ ^[a-z_][a-z0-9_-]*\$?$ ]] || { echo 'DEPLOY_USER must be a Unix account name.' >&2; exit 1; }
+          [[ "$DEPLOY_PATH" =~ ^/[a-zA-Z0-9_./-]+$ ]] || { echo 'DEPLOY_PATH must be an absolute path without spaces.' >&2; exit 1; }
+      - name: Configure SSH
+        shell: bash
+        run: |
+          set -euo pipefail
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8
+        with:
+          name: production-assets
+          path: deployment-assets
+      - name: Package verified frontend assets
+        run: tar -czf public-build.tar.gz -C deployment-assets .
+      - name: Copy frontend assets to the droplet
+        shell: bash
+        run: |
+          set -euo pipefail
+          scp -i ~/.ssh/deploy_key \
+            -o BatchMode=yes \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            public-build.tar.gz \
+            "$DEPLOY_USER@165.22.88.77:/tmp/securitate-digitala-build-${GITHUB_SHA}.tar.gz"
+      - name: Deploy latest main on the DigitalOcean droplet
+        shell: bash
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/deploy_key \
+            -o BatchMode=yes \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            "$DEPLOY_USER@165.22.88.77" \
+            "DEPLOY_PATH='$DEPLOY_PATH' ASSET_ARCHIVE='/tmp/securitate-digitala-build-${GITHUB_SHA}.tar.gz' bash -se" <<'REMOTE'
+          set -euo pipefail
+          cd "$DEPLOY_PATH"
+          git fetch origin main
+          git switch main
+          git merge --ff-only origin/main
+          composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+          mkdir -p public/build
+          tar -xzf "$ASSET_ARCHIVE" -C public/build
+          rm "$ASSET_ARCHIVE"
+          php artisan migrate --force
+          php artisan optimize
+          REMOTE

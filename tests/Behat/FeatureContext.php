@@ -34,6 +34,12 @@ class FeatureContext implements Context
         $this->response = $this->test->get('/');
     }
 
+    #[When('I open the admin dashboard')]
+    public function openAdminDashboard(): void
+    {
+        $this->response = $this->test->get('/admin');
+    }
+
     #[When('I search articles for :query')]
     public function searchArticles(string $query): void
     {
@@ -95,6 +101,15 @@ class FeatureContext implements Context
     public function responseShouldRedirect(): void
     {
         $this->ensure($this->currentResponse()->isRedirect(), 'Expected the response to redirect.');
+    }
+
+    #[Then('the response should redirect to the admin login page')]
+    public function responseShouldRedirectToAdminLogin(): void
+    {
+        $this->ensure(
+            $this->currentResponse()->isRedirect(route('admin.login')),
+            'Expected unauthenticated visitors to be redirected to the admin login page.'
+        );
     }
 
     #[Then('the success message should be shown')]

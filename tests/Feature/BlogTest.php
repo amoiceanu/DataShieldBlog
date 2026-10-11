@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\Article;
 use App\Models\ContactMessage;
+use App\Models\Category;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -25,7 +27,8 @@ class BlogTest extends TestCase
             ->assertSee('Protejează-ți viața')
             ->assertSee('Securitate Digitală')
             ->assertSee('og:site_name', false)
-            ->assertSee('https://securitatedigitala.ro');
+            ->assertSee('https://securitatedigitala.ro')
+            ->assertDontSee('Administrare');
         $this->get('/articole')->assertOk()->assertSee($article->title);
         $this->get(route('articles.show', $article))
             ->assertOk()
@@ -58,5 +61,92 @@ class BlogTest extends TestCase
         $this->post(route('contact.store'), ['name' => '', 'email' => 'invalid'])->assertSessionHasErrors(['name', 'email']);
         $this->post(route('contact.store'), ['name' => 'Bot', 'email' => 'bot@example.com', 'subject' => 'Test', 'message' => 'Mesaj suficient de lung.', 'privacy_accepted' => '1', 'website' => 'spam.example'])->assertSessionHas('success');
         $this->assertDatabaseCount('contact_messages', 0);
+    }
+
+    public function test_drafts_are_hidden_from_public_pages_and_sitemap(): void
+    {
+        $article = Article::firstOrFail();
+        $article->update(['status' => 'draft']);
+
+        $this->get('/')->assertDontSee($article->title);
+        $this->get('/articole')->assertDontSee($article->title);
+        $this->get(route('articles.show', $article))->assertNotFound();
+        $this->get('/sitemap.xml')->assertDontSee('https://securitatedigitala.ro/articole/'.$article->slug);
+    }
+
+    public function test_admin_routes_require_an_admin_account(): void
+    {
+        $this->get(route('admin.login'))->assertOk()->assertSee('Autentificare');
+        $this->get(route('admin.articole.index'))->assertRedirect(route('admin.login'));
+        $this->post(route('admin.login.store'), ['email' => 'reader@example.com', 'password' => 'wrong-password'])->assertSessionHasErrors('email');
+
+        $user = User::factory()->create(['is_admin' => false]);
+        $this->actingAs($user)->get(route('admin.articole.index'))->assertForbidden();
+    }
+
+    public function test_admin_can_log_in_and_log_out(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true, 'password' => 'correct horse battery staple']);
+
+        $this->post(route('admin.login.store'), ['email' => $admin->email, 'password' => 'correct horse battery staple'])
+            ->assertRedirect(route('admin.articole.index'));
+        $this->get(route('admin.articole.index'))->assertOk()->assertSee('Articole');
+        $this->post(route('admin.logout'))->assertRedirect(route('admin.login'));
+        $this->get(route('admin.articole.index'))->assertRedirect(route('admin.login'));
+
+        $reader = User::factory()->create(['is_admin' => false]);
+        $this->post(route('admin.login.store'), ['email' => $reader->email, 'password' => 'password'])->assertForbidden();
+    }
+
+    public function test_admin_can_create_a_draft_then_publish_it(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+        $category = Category::firstOrFail();
+        $data = [
+            'category_id' => $category->id,
+            'title' => 'Articol pregătit pentru publicare',
+            'slug' => '',
+            'excerpt' => 'Descriere pentru un articol nou.',
+            'content' => '<p>Conținutul articolului.</p>',
+            'image' => '',
+            'author' => 'Redacția Securitate Digitală',
+            'reading_time' => 4,
+            'status' => 'draft',
+        ];
+
+        $this->actingAs($admin)->get(route('admin.articole.index'))->assertOk();
+        $this->get(route('admin.articole.create'))->assertOk()->assertSee('Articol nou');
+        $this->post(route('admin.articole.store'), $data)->assertRedirect(route('admin.articole.index'));
+        $article = Article::where('slug', 'articol-pregatit-pentru-publicare')->firstOrFail();
+        $this->assertSame('draft', $article->status);
+        $this->get(route('admin.articole.edit', $article))->assertOk()->assertSee($article->title);
+        $this->get(route('articles.show', $article))->assertNotFound();
+
+        $data['status'] = 'published';
+        $data['published_at'] = now()->toDateString();
+        $this->put(route('admin.articole.update', $article), $data)->assertRedirect(route('admin.articole.index'));
+        $this->assertDatabaseHas('articles', ['id' => $article->id, 'status' => 'published']);
+        $this->get(route('articles.show', $article))->assertOk()->assertSee($article->title);
+        $this->delete(route('admin.articole.destroy', $article))->assertRedirect();
+        $this->assertDatabaseMissing('articles', ['id' => $article->id]);
+    }
+
+    public function test_admin_can_manage_sections_without_cascading_article_deletion(): void
+    {
+        $admin = User::factory()->create(['is_admin' => true]);
+        $category = Category::create(['name' => 'Secțiune de test', 'slug' => 'sectiune-de-test', 'description' => 'Descriere']);
+        $article = Article::firstOrFail();
+
+        $this->actingAs($admin)->get(route('admin.sectiuni.index'))->assertOk();
+        $this->get(route('admin.sectiuni.create'))->assertOk()->assertSee('Secțiune nouă');
+        $this->post(route('admin.sectiuni.store'), ['name' => 'Secțiune creată', 'slug' => '', 'description' => 'Nouă'])->assertRedirect(route('admin.sectiuni.index'));
+        $this->assertDatabaseHas('categories', ['slug' => 'sectiune-creata']);
+        $this->delete(route('admin.sectiuni.destroy', $article->category))->assertSessionHasErrors('category');
+        $this->assertDatabaseHas('articles', ['id' => $article->id]);
+
+        $this->put(route('admin.sectiuni.update', $category), ['name' => 'Secțiune actualizată', 'slug' => '', 'description' => 'Nou'])->assertRedirect(route('admin.sectiuni.index'));
+        $this->assertDatabaseHas('categories', ['id' => $category->id, 'slug' => 'sectiune-actualizata']);
+        $this->delete(route('admin.sectiuni.destroy', $category))->assertRedirect();
+        $this->assertDatabaseMissing('categories', ['id' => $category->id]);
     }
 }

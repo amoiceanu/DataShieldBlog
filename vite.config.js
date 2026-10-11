@@ -6,7 +6,7 @@ export default defineConfig({
     base: './',
     plugins: [
         laravel({
-            input: ['resources/scss/app.scss', 'resources/js/app.js'],
+            input: ['resources/scss/app.scss', 'resources/scss/admin.scss', 'resources/js/app.js'],
             refresh: true,
         }),
         tailwindcss(),

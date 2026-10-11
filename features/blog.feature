@@ -22,6 +22,10 @@ Feature: Securitate Digitală
     When I open article "articol-inexistent"
     Then the response status should be 404
 
+  Scenario: Admin area requires authentication
+    When I open the admin dashboard
+    Then the response should redirect to the admin login page
+
   Scenario: Visitor sends a contact message with consent
     When I submit a valid contact message with privacy consent
     Then the response should redirect
