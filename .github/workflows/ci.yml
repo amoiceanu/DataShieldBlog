@@ -146,5 +146,6 @@ jobs:
           tar -xzf "$ASSET_ARCHIVE" -C public/build
           rm "$ASSET_ARCHIVE"
           php artisan migrate --force
+          php artisan db:seed --class=ContentCatalogSeeder --force
           php artisan optimize
           REMOTE

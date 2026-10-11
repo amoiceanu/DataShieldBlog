@@ -43,22 +43,26 @@ class ContentCatalogSeeder extends Seeder
                 $category = $categories[$data['category']];
                 $secondary = $data['secondary_keywords'];
 
-                Article::firstOrCreate(['slug' => $data['slug']], [
+                $article = Article::firstOrCreate(['slug' => $data['slug']], [
                     'category_id' => $category->id,
                     'title' => $data['title'],
                     'excerpt' => $data['excerpt'],
                     'content' => $content,
                     'image' => null,
                     'author' => 'Redacția Securitate Digitală',
-                    'published_at' => null,
+                    'published_at' => today()->toDateString(),
                     'reading_time' => $data['reading_time'],
                     'is_featured' => false,
-                    'status' => 'draft',
+                    'status' => 'published',
                     'seo_title' => $data['seo_title'],
                     'meta_description' => $data['meta_description'],
                     'focus_keyword' => $data['focus_keyword'],
                     'secondary_keywords' => $secondary,
                 ]);
+
+                if ($article->status !== 'published' || ! $article->published_at || $article->published_at->isAfter(today())) {
+                    $article->update(['status' => 'published', 'published_at' => today()->toDateString()]);
+                }
             }
 
             Cache::forget('blog.categories');

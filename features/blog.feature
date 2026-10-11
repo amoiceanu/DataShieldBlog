@@ -5,7 +5,12 @@ Feature: Securitate Digitală
     When I open the homepage
     Then the response status should be 200
     And the page should contain "Ultimele articole"
-    And the page should contain "10 reguli simple ca să îți protejezi datele personale online"
+    And the page should contain "Protejează-ți viața"
+
+  Scenario: Search finds a published catalog article
+    When I search articles for "conturilor de social media"
+    Then the response status should be 200
+    And the page should contain "Cum îți protejezi conturile de social media"
 
   Scenario: Search finds a phishing guide
     When I search articles for "phishing"

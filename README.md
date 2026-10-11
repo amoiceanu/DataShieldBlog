@@ -46,7 +46,7 @@ Autentificarea este la `/admin/login`. Din panoul `/admin/articole` poți crea, 
 
 ## Catalog editorial
 
-Catalogul editorial definește cele 10 secțiuni și adaugă cele 27 de articole noi ca drafturi, cu metadate SEO, legături interne și surse. Pentru o bază de date existentă, după migrare rulează `php artisan db:seed --class=ContentCatalogSeeder`. Comanda este idempotentă: nu dublează articole și păstrează conținutul ori starea articolelor deja existente. `php artisan migrate --seed` rulează și catalogul după cele trei articole introductive. Importul modifică doar baza de date configurată local; verifică `.env` înainte de rulare.
+Catalogul editorial definește cele 10 secțiuni și adaugă cele 27 de articole noi ca publicate, cu metadate SEO, legături interne și surse. Pentru o bază de date existentă, după migrare rulează `php artisan db:seed --class=ContentCatalogSeeder`. Comanda este idempotentă: nu dublează articole și păstrează conținutul existent; articolele catalogului sunt publicate la prima importare, iar drafturile catalogului existente sunt publicate la rerulare. `php artisan migrate --seed` rulează și catalogul după cele trei articole introductive. Workflow-ul de deploy rulează migrarea și seederul catalogului după ce toate verificările CI trec.
 
 ## Funcționalități
 
