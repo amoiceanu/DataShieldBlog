@@ -20,12 +20,20 @@ class BlogTest extends TestCase
     public function test_home_articles_and_article_detail_render(): void
     {
         $article = Article::firstOrFail();
-        $this->get('/')->assertOk()->assertSee('Protejează-ți datele');
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('Protejează-ți viața')
+            ->assertSee('Securitate Digitală')
+            ->assertSee('og:site_name', false)
+            ->assertSee('https://securitatedigitala.ro');
         $this->get('/articole')->assertOk()->assertSee($article->title);
-        $this->get(route('articles.show', $article))->assertOk()->assertSee($article->title);
+        $this->get(route('articles.show', $article))
+            ->assertOk()
+            ->assertSee($article->title)
+            ->assertSee('Redacția Securitate Digitală');
         $this->get('/articole/nu-exista')->assertNotFound();
-        $this->get('/sitemap.xml')->assertOk()->assertSee('<urlset', false);
-        $this->get('/robots.txt')->assertOk()->assertSee('/sitemap.xml');
+        $this->get('/sitemap.xml')->assertOk()->assertSee('<urlset', false)->assertSee('https://securitatedigitala.ro');
+        $this->get('/robots.txt')->assertOk()->assertSee('https://securitatedigitala.ro/sitemap.xml');
     }
 
     public function test_search_and_category_filter_work(): void

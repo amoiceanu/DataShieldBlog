@@ -1,12 +1,18 @@
-# DataShield Blog
+# Securitate Digitală
 
-Blog educațional în limba română despre securitate digitală și protecția datelor personale. Aplicația folosește Laravel 12, Blade, Bootstrap 5.3, Bootstrap Icons, SCSS compilat prin Vite și MySQL.
+Blog educațional în limba română despre securitate online și protecția datelor personale.
+
+**Protejează-ți viața online.**
+
+Site oficial: [securitatedigitala.ro](https://securitatedigitala.ro)
+
+Aplicația folosește Laravel 12, Blade, Bootstrap 5.3, Bootstrap Icons, SCSS compilat prin Vite și MySQL.
 
 ## Cerințe
 
 - PHP 8.2 sau mai nou, cu extensiile Laravel necesare
 - Composer
-- Node.js 20 sau 22 și npm
+- Node.js 22 și npm
 - MySQL
 
 ## Instalare locală
@@ -46,16 +52,11 @@ composer test:gherkin
 
 Testele PHPUnit și scenariile Gherkin folosesc SQLite în memorie și nu modifică baza de date de dezvoltare. Scenariile executabile sunt în `features/blog.feature` și folosesc Behat.
 
-## CI și deployment
+## CI
 
-Workflow-ul GitHub Actions din `.github/workflows/ci.yml` rulează la fiecare pull request și push pe `main`:
+Workflow-ul GitHub Actions din `.github/workflows/ci.yml` rulează la fiecare pull request și push pe `main`: audit Composer și npm, compilarea asset-urilor, PHPUnit cu prag minim de acoperire de 70% și scenariile Gherkin.
 
-- audit Composer pentru dependențele PHP blocate în `composer.lock`;
-- audit npm, care oprește build-ul pentru vulnerabilități high sau critical;
-- compilarea resurselor frontend cu `npm run build`;
-- PHPUnit cu Xdebug și prag minim de acoperire de 70%, plus scenariile Gherkin.
-
-Pentru ca aceste verificări să fie obligatorii înainte de integrarea pull request-urilor, configurează în GitHub branch protection/ruleset pentru `main` și cere verificările `Composer security audit`, `npm security audit`, `Compile frontend assets` și `PHPUnit, coverage, and Gherkin`.
+Pentru ca verificările să fie obligatorii la integrarea pull request-urilor, configurează branch protection/ruleset în GitHub pentru `main` și cere verificările `Composer security audit`, `npm security audit`, `Compile frontend assets` și `PHPUnit, coverage, and Gherkin`.
 
 ## Notă
 

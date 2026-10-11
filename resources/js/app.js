@@ -27,9 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', event => { if (event.key === 'Escape') closeSearch(); });
 
     const notice = document.querySelector('.cookie-notice');
-    if (notice && !localStorage.getItem('datashield-cookie-notice')) notice.hidden = false;
+    if (notice && !localStorage.getItem('securitate-digitala-cookie-notice')) notice.hidden = false;
     document.querySelector('.cookie-accept')?.addEventListener('click', () => {
-        localStorage.setItem('datashield-cookie-notice', 'seen');
+        localStorage.setItem('securitate-digitala-cookie-notice', 'seen');
         notice.hidden = true;
     });
 });

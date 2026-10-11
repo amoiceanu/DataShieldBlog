@@ -14,8 +14,19 @@ Route::post('/contact', [ContactController::class, 'store'])->middleware('thrott
 Route::view('/politica-de-confidentialitate', 'pages.privacy')->name('privacy');
 Route::view('/politica-cookies', 'pages.cookies')->name('cookies');
 Route::get('/sitemap.xml', function () {
-    $urls = [['loc' => route('home')], ['loc' => route('articles.index')], ['loc' => route('about')], ['loc' => route('contact')], ['loc' => route('privacy')], ['loc' => route('cookies')]];
-    foreach (\App\Models\Article::whereDate('published_at', '<=', now())->get() as $article) $urls[] = ['loc' => route('articles.show', $article), 'lastmod' => $article->updated_at->toAtomString()];
+    $siteUrl = 'https://securitatedigitala.ro';
+    $canonicalRoute = fn (string $name, mixed $parameters = []) => $siteUrl.route($name, $parameters, false);
+    $urls = [
+        ['loc' => $canonicalRoute('home')],
+        ['loc' => $canonicalRoute('articles.index')],
+        ['loc' => $canonicalRoute('about')],
+        ['loc' => $canonicalRoute('contact')],
+        ['loc' => $canonicalRoute('privacy')],
+        ['loc' => $canonicalRoute('cookies')],
+    ];
+    foreach (\App\Models\Article::whereDate('published_at', '<=', now())->get() as $article) {
+        $urls[] = ['loc' => $canonicalRoute('articles.show', $article), 'lastmod' => $article->updated_at->toAtomString()];
+    }
     return response()->view('sitemap', compact('urls'))->header('Content-Type', 'application/xml');
 })->name('sitemap');
-Route::get('/robots.txt', fn () => Response::make("User-agent: *\nAllow: /\nSitemap: ".route('sitemap')."\n", 200, ['Content-Type' => 'text/plain']))->name('robots');
+Route::get('/robots.txt', fn () => Response::make("User-agent: *\nAllow: /\nSitemap: https://securitatedigitala.ro/sitemap.xml\n", 200, ['Content-Type' => 'text/plain']))->name('robots');

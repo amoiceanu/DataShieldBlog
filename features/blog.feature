@@ -1,4 +1,4 @@
-Feature: DataShield Blog
+Feature: Securitate Digitală
   Visitors can find practical security guidance and contact the editorial team.
 
   Scenario: Homepage presents recent guidance

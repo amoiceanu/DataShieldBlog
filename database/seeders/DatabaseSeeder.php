@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
         ];
         foreach ($articles as $data) {
             $category = Category::where('slug', $data['category'])->firstOrFail(); unset($data['category']);
-            Article::updateOrCreate(['slug' => $data['slug']], [...$data, 'category_id' => $category->id, 'author' => 'Redacția DataShield', 'published_at' => '2026-10-05']);
+            Article::updateOrCreate(['slug' => $data['slug']], [...$data, 'category_id' => $category->id, 'author' => 'Redacția Securitate Digitală', 'published_at' => '2026-10-05']);
         }
     }
 }

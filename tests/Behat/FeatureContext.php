@@ -3,6 +3,10 @@
 namespace Tests\Behat;
 
 use Behat\Behat\Context\Context;
+use Behat\Hook\AfterScenario;
+use Behat\Hook\BeforeScenario;
+use Behat\Step\Then;
+use Behat\Step\When;
 use Illuminate\Testing\TestResponse;
 
 class FeatureContext implements Context
@@ -11,56 +15,56 @@ class FeatureContext implements Context
 
     private ?TestResponse $response = null;
 
-    /** @BeforeScenario */
+    #[BeforeScenario]
     public function bootApplication(): void
     {
         $this->test = new GherkinLaravelTestCase('gherkin scenario');
         $this->test->startScenario();
     }
 
-    /** @AfterScenario */
+    #[AfterScenario]
     public function closeApplication(): void
     {
         $this->test->stopScenario();
     }
 
-    /** @When I open the homepage */
+    #[When('I open the homepage')]
     public function openHomepage(): void
     {
         $this->response = $this->test->get('/');
     }
 
-    /** @When I search articles for :query */
+    #[When('I search articles for :query')]
     public function searchArticles(string $query): void
     {
         $this->response = $this->test->get('/articole?q='.urlencode($query));
     }
 
-    /** @When I filter articles by category :slug */
+    #[When('I filter articles by category :slug')]
     public function filterArticlesByCategory(string $slug): void
     {
         $this->response = $this->test->get('/articole?categorie='.urlencode($slug));
     }
 
-    /** @When I open article :slug */
+    #[When('I open article :slug')]
     public function openArticle(string $slug): void
     {
         $this->response = $this->test->get('/articole/'.$slug);
     }
 
-    /** @When I submit a valid contact message with privacy consent */
+    #[When('I submit a valid contact message with privacy consent')]
     public function submitContactWithConsent(): void
     {
         $this->submitContact(['privacy_accepted' => '1']);
     }
 
-    /** @When I submit a valid contact message without privacy consent */
+    #[When('I submit a valid contact message without privacy consent')]
     public function submitContactWithoutConsent(): void
     {
         $this->submitContact([]);
     }
 
-    /** @Then the response status should be :status */
+    #[Then('the response status should be :status')]
     public function responseStatusShouldBe(int $status): void
     {
         $this->ensure(
@@ -69,7 +73,7 @@ class FeatureContext implements Context
         );
     }
 
-    /** @Then the page should contain :text */
+    #[Then('the page should contain :text')]
     public function pageShouldContain(string $text): void
     {
         $this->ensure(
@@ -78,7 +82,7 @@ class FeatureContext implements Context
         );
     }
 
-    /** @Then the page should not contain :text */
+    #[Then('the page should not contain :text')]
     public function pageShouldNotContain(string $text): void
     {
         $this->ensure(
@@ -87,13 +91,13 @@ class FeatureContext implements Context
         );
     }
 
-    /** @Then the response should redirect */
+    #[Then('the response should redirect')]
     public function responseShouldRedirect(): void
     {
         $this->ensure($this->currentResponse()->isRedirect(), 'Expected the response to redirect.');
     }
 
-    /** @Then the success message should be shown */
+    #[Then('the success message should be shown')]
     public function successMessageShouldBeShown(): void
     {
         $this->ensure(
@@ -102,7 +106,7 @@ class FeatureContext implements Context
         );
     }
 
-    /** @Then the contact message should be stored */
+    #[Then('the contact message should be stored')]
     public function contactMessageShouldBeStored(): void
     {
         $this->ensure(
@@ -111,7 +115,7 @@ class FeatureContext implements Context
         );
     }
 
-    /** @Then the response should contain a privacy consent validation error */
+    #[Then('the response should contain a privacy consent validation error')]
     public function privacyConsentValidationErrorShouldBeShown(): void
     {
         $this->ensure(
@@ -120,7 +124,7 @@ class FeatureContext implements Context
         );
     }
 
-    /** @Then no contact message should be stored */
+    #[Then('no contact message should be stored')]
     public function noContactMessageShouldBeStored(): void
     {
         $this->ensure($this->test->contactMessageCount() === 0, 'Expected no contact messages to be saved.');

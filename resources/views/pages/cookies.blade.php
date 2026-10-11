@@ -1,1 +1,19 @@
-@extends('layouts.app')@section('title','Politica cookies — DataShield')@section('content')<section class="page-hero container"><span class="eyebrow">ALEGERI SIMPLE</span><h1>Politica <span>cookies</span></h1><p>Cookie-urile și tehnologiile folosite pe acest site.</p></section><section class="container section prose-page"><p><strong>Notă:</strong> Textul este informativ, nu reprezintă consultanță juridică și trebuie adaptat configurației reale a site-ului.</p><h2>Ce folosim</h2><p>DataShield nu folosește în configurația curentă cookie-uri de analiză sau publicitate. Aplicația poate utiliza cookie-uri strict necesare pentru funcționare, de exemplu pentru menținerea sesiunii și protecția formularelor.</p><h2>Servicii externe</h2><p>Încărcarea fonturilor și a pictogramelor din rețele de distribuție terțe poate transmite furnizorilor date tehnice precum adresa IP. Pentru control local complet, găzduiește aceste resurse pe serverul propriu.</p><h2>Gestionare</h2><p>Poți șterge sau bloca cookie-urile din setările browserului. Blocarea celor strict necesare poate afecta funcționarea unor funcții, precum trimiterea formularului.</p></section>@endsection
+@extends('layouts.app')
+@section('title', 'Politica cookies — Securitate Digitală')
+@section('description', 'Află ce cookie-uri și tehnologii folosește securitatedigitala.ro.')
+@section('content')
+<section class="page-hero container">
+    <span class="eyebrow">ALEGERI SIMPLE</span>
+    <h1>Politica <span>cookies</span></h1>
+    <p>Cookie-urile și tehnologiile folosite pe securitatedigitala.ro.</p>
+</section>
+<section class="container section prose-page">
+    <p><strong>Notă:</strong> Textul este informativ, nu reprezintă consultanță juridică și trebuie adaptat configurației reale a site-ului.</p>
+    <h2>Ce folosim</h2>
+    <p>Securitate Digitală nu folosește în configurația curentă cookie-uri de analiză sau publicitate. Aplicația poate utiliza cookie-uri strict necesare pentru funcționare, de exemplu pentru menținerea sesiunii și protecția formularelor.</p>
+    <h2>Servicii externe</h2>
+    <p>Încărcarea fonturilor și a pictogramelor din rețele de distribuție terțe poate transmite furnizorilor date tehnice precum adresa IP. Pentru control local complet, găzduiește aceste resurse pe serverul propriu.</p>
+    <h2>Gestionare</h2>
+    <p>Poți șterge sau bloca cookie-urile din setările browserului. Blocarea celor strict necesare poate afecta funcționarea unor funcții, precum trimiterea formularului.</p>
+</section>
+@endsection
