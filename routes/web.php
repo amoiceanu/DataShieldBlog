@@ -5,6 +5,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\ContactMessageController as AdminContactMessageController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Response;
 
@@ -22,6 +23,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('articole', AdminArticleController::class)->except('show')->parameters(['articole' => 'article']);
     Route::get('articole/{article}', [AdminArticleController::class, 'show'])->name('articole.show');
     Route::resource('sectiuni', AdminCategoryController::class)->except('show')->parameters(['sectiuni' => 'category']);
+    Route::resource('contact', AdminContactMessageController::class)->only(['index', 'show'])->parameters(['contact' => 'contactMessage']);
 });
 Route::view('/politica-de-confidentialitate', 'pages.privacy')->name('privacy');
 Route::view('/politica-cookies', 'pages.cookies')->name('cookies');

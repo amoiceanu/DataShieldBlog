@@ -26,7 +26,9 @@ class DatabaseSeeder extends Seeder
         ];
         foreach ($articles as $data) {
             $category = Category::where('slug', $data['category'])->firstOrFail(); unset($data['category']);
-            Article::updateOrCreate(['slug' => $data['slug']], [...$data, 'category_id' => $category->id, 'author' => 'Redacția Securitate Digitală', 'published_at' => '2026-10-05']);
+            Article::firstOrCreate(['slug' => $data['slug']], [...$data, 'category_id' => $category->id, 'author' => 'Redacția Securitate Digitală', 'published_at' => '2026-10-05']);
         }
+
+        $this->call(ContentCatalogSeeder::class);
     }
 }

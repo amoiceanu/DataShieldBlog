@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Article extends Model
 {
-    protected $fillable = ['category_id', 'title', 'slug', 'excerpt', 'content', 'image', 'author', 'published_at', 'reading_time', 'is_featured', 'status'];
+    protected $fillable = ['category_id', 'title', 'slug', 'excerpt', 'content', 'image', 'author', 'published_at', 'reading_time', 'is_featured', 'status', 'seo_title', 'meta_description', 'focus_keyword', 'secondary_keywords'];
 
     protected function casts(): array
     {
-        return ['published_at' => 'date', 'is_featured' => 'boolean'];
+        return ['published_at' => 'date', 'is_featured' => 'boolean', 'secondary_keywords' => 'array'];
     }
 
     public function category(): BelongsTo

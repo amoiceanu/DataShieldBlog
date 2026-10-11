@@ -42,7 +42,73 @@ class BlogTest extends TestCase
     public function test_search_and_category_filter_work(): void
     {
         $this->get('/articole?q=phishing')->assertOk()->assertSee('Cum recunoști un e-mail de tip phishing');
-        $this->get('/articole?categorie=phishing')->assertOk()->assertSee('Cum recunoști un e-mail de tip phishing')->assertDontSee('10 reguli simple ca să îți protejezi');
+        $this->get('/articole?categorie=fraude-online')->assertOk()->assertSee('Cum recunoști un e-mail de tip phishing')->assertDontSee('10 reguli simple ca să îți protejezi');
+    }
+
+    public function test_catalog_import_creates_ten_sections_and_twenty_seven_drafts_idempotently(): void
+    {
+        $original = Article::where('slug', '10-reguli-simple-protejare-date-personale-online')->firstOrFail();
+        $originalContent = $original->content;
+        $this->assertDatabaseCount('categories', 10);
+        $this->assertDatabaseCount('articles', 30);
+        $this->assertSame(27, Article::where('status', 'draft')->count());
+        $this->assertSame(27, Article::where('status', 'draft')->whereNull('published_at')->whereNotNull('seo_title')->whereNotNull('meta_description')->whereNotNull('focus_keyword')->whereNotNull('secondary_keywords')->count());
+        $this->assertSame(27, Article::where('status', 'draft')->whereNotNull('seo_title')->distinct()->count('seo_title'));
+        $this->assertDatabaseMissing('categories', ['slug' => 'phishing']);
+        $this->assertDatabaseHas('articles', [
+            'slug' => '10-reguli-simple-protejare-date-personale-online',
+            'category_id' => Category::where('slug', 'date-personale')->value('id'),
+        ]);
+
+        foreach (Article::where('status', 'draft')->get() as $draft) {
+            preg_match_all('/[\p{L}\p{N}]+(?:[’\'-][\p{L}\p{N}]+)*/u', $draft->excerpt, $excerptWords);
+            $this->assertGreaterThanOrEqual(30, count($excerptWords[0]), $draft->slug.' excerpt is too short');
+            $this->assertLessThanOrEqual(50, count($excerptWords[0]), $draft->slug.' excerpt is too long');
+            $this->assertNotSame('', trim(strip_tags($draft->content)), $draft->slug.' has no article body');
+            $this->assertMatchesRegularExpression('/<h2>Articole conexe<\/h2>/', $draft->content, $draft->slug.' has no related articles');
+            $this->assertMatchesRegularExpression('/<h2>Surse și resurse utile<\/h2>/', $draft->content, $draft->slug.' has no sources');
+            preg_match_all('/href="\/articole\/([^"?#]+)"/', $draft->content, $internalLinks);
+            $this->assertNotEmpty($internalLinks[1], $draft->slug.' has no internal article links');
+            foreach ($internalLinks[1] as $linkedSlug) {
+                $this->assertDatabaseHas('articles', ['slug' => $linkedSlug]);
+            }
+            preg_match_all('/href="https:\/\//', $draft->content, $sourceLinks);
+            $this->assertGreaterThanOrEqual(2, count($sourceLinks[0]), $draft->slug.' has fewer than two external sources');
+            $this->assertLessThanOrEqual(4, count($sourceLinks[0]), $draft->slug.' has more than four external sources');
+        }
+
+        $article = Article::where('slug', 'cum-recunosti-sms-fals-fraude-mesaje')->firstOrFail();
+        $article->update(['content' => '<p>Conținut editorial păstrat</p>']);
+        $this->seed(\Database\Seeders\ContentCatalogSeeder::class);
+
+        $this->assertDatabaseCount('categories', 10);
+        $this->assertDatabaseCount('articles', 30);
+        $this->assertSame('<p>Conținut editorial păstrat</p>', $article->fresh()->content);
+        $this->assertSame('draft', $article->fresh()->status);
+        $this->assertSame($originalContent, $original->fresh()->content);
+        $this->assertSame('published', $original->fresh()->status);
+
+        $admin = User::factory()->create(['is_admin' => true]);
+        $this->actingAs($admin)->get(route('admin.articole.show', $article))->assertOk()->assertSee($article->title);
+        $this->get(route('admin.articole.edit', $article))->assertOk()->assertSee($article->title);
+    }
+
+    public function test_old_category_query_urls_redirect_permanently_to_renamed_slugs(): void
+    {
+        $this->get('/articole?categorie=phishing&q=mesaj')
+            ->assertStatus(301)
+            ->assertRedirect('/articole?categorie=fraude-online&q=mesaj');
+
+        foreach ([
+            'ghiduri' => 'ghiduri-practice',
+            'parole' => 'parole-autentificare',
+            'social-media' => 'retele-sociale',
+            'securitate-online' => 'securitate-dispozitive',
+        ] as $oldSlug => $newSlug) {
+            $this->get('/articole?categorie='.$oldSlug)
+                ->assertStatus(301)
+                ->assertRedirect('/articole?categorie='.$newSlug);
+        }
     }
 
     public function test_valid_contact_is_saved_and_privacy_acceptance_is_required(): void
@@ -71,6 +137,10 @@ class BlogTest extends TestCase
         $this->get('/')->assertDontSee($article->title);
         $this->get('/articole')->assertDontSee($article->title);
         $this->get(route('articles.show', $article))->assertNotFound();
+        $catalogDraft = Article::where('status', 'draft')->firstOrFail();
+        $this->get('/')->assertDontSee($catalogDraft->title);
+        $this->get('/articole')->assertDontSee($catalogDraft->title);
+        $this->get(route('articles.show', $catalogDraft))->assertNotFound();
         $this->get('/sitemap.xml')->assertDontSee('https://securitatedigitala.ro/articole/'.$article->slug);
     }
 

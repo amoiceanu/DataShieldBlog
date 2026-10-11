@@ -2,6 +2,7 @@
 @section('title', 'Secțiuni — Administrare')
 @section('content')
 <div class="admin-heading"><div><h1>Secțiuni</h1><p>Organizează articolele în categorii.</p></div><a class="admin-button primary" href="{{ route('admin.sectiuni.create') }}"><i class="bi bi-plus-lg"></i> Secțiune nouă</a></div>
+@include('admin.partials.stats', ['stats' => $stats])
 <section class="admin-panel">
     <table class="admin-table"><thead><tr><th>Secțiune</th><th>Slug</th><th>Articole</th><th>Acțiuni</th></tr></thead><tbody>
         @forelse($categories as $category)

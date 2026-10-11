@@ -103,6 +103,17 @@ class FeatureContext implements Context
         $this->ensure($this->currentResponse()->isRedirect(), 'Expected the response to redirect.');
     }
 
+    #[Then('the response should redirect to :location')]
+    public function responseShouldRedirectTo(string $location): void
+    {
+        $actual = $this->currentResponse()->headers->get('Location');
+        $path = $actual ? parse_url($actual, PHP_URL_PATH).(parse_url($actual, PHP_URL_QUERY) ? '?'.parse_url($actual, PHP_URL_QUERY) : '') : null;
+        $this->ensure(
+            $path === $location,
+            'Expected redirect to '.$location.', received '.$path.'.'
+        );
+    }
+
     #[Then('the response should redirect to the admin login page')]
     public function responseShouldRedirectToAdminLogin(): void
     {

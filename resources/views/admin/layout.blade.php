@@ -17,6 +17,7 @@
             <nav class="admin-nav" aria-label="Administrare">
                 <a class="{{ request()->routeIs('admin.articole.*') ? 'active' : '' }}" href="{{ route('admin.articole.index') }}">Articole</a>
                 <a class="{{ request()->routeIs('admin.sectiuni.*') ? 'active' : '' }}" href="{{ route('admin.sectiuni.index') }}">Secțiuni</a>
+                <a class="{{ request()->routeIs('admin.contact.*') ? 'active' : '' }}" href="{{ route('admin.contact.index') }}">Contact</a>
             </nav>
             <span class="admin-user">{{ auth()->user()->name }}</span>
             <form action="{{ route('admin.logout') }}" method="post">@csrf<button class="admin-button" type="submit">Ieșire</button></form>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Article;
 use App\Models\Category;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,7 +15,15 @@ class CategoryController extends Controller
 {
     public function index(): View
     {
-        return view('admin.categories.index', ['categories' => Category::withCount('articles')->orderBy('name')->paginate(15)]);
+        return view('admin.categories.index', [
+            'categories' => Category::withCount('articles')->orderBy('name')->paginate(15),
+            'stats' => [
+                'articles' => Article::count(),
+                'published' => Article::where('status', 'published')->count(),
+                'drafts' => Article::where('status', 'draft')->count(),
+                'sections' => Category::count(),
+            ],
+        ]);
     }
 
     public function create(): View

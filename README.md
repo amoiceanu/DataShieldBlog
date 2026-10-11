@@ -44,6 +44,10 @@ php artisan admin:create
 
 Autentificarea este la `/admin/login`. Din panoul `/admin/articole` poți crea, edita și șterge articole, le poți păstra ca draft sau publica și poți programa data publicării. Secțiunile se gestionează din `/admin/sectiuni`. Doar articolele publicate cu data ajunsă apar pe site și în sitemap.
 
+## Catalog editorial
+
+Catalogul editorial definește cele 10 secțiuni și adaugă cele 27 de articole noi ca drafturi, cu metadate SEO, legături interne și surse. Pentru o bază de date existentă, după migrare rulează `php artisan db:seed --class=ContentCatalogSeeder`. Comanda este idempotentă: nu dublează articole și păstrează conținutul ori starea articolelor deja existente. `php artisan migrate --seed` rulează și catalogul după cele trei articole introductive. Importul modifică doar baza de date configurată local; verifică `.env` înainte de rulare.
+
 ## Funcționalități
 
 - Pagina principală, index cu căutare, filtrare și paginare și pagini individuale de articol

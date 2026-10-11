@@ -26,6 +26,12 @@ class ArticleController extends Controller
         return view('admin.articles.index', [
             'articles' => $articles->paginate(15)->withQueryString(),
             'filteredCategory' => $category,
+            'stats' => [
+                'articles' => Article::count(),
+                'published' => Article::where('status', 'published')->count(),
+                'drafts' => Article::where('status', 'draft')->count(),
+                'sections' => Category::count(),
+            ],
         ]);
     }
 
@@ -80,11 +86,21 @@ class ArticleController extends Controller
             'is_featured' => ['sometimes', 'boolean'],
             'status' => ['required', Rule::in(['draft', 'published'])],
             'published_at' => ['nullable', 'date'],
+            'seo_title' => ['nullable', 'string', 'max:255'],
+            'meta_description' => ['nullable', 'string', 'max:320'],
+            'focus_keyword' => ['nullable', 'string', 'max:160'],
+            'secondary_keywords' => ['nullable', 'string', 'max:1000'],
         ]);
 
         $data['slug'] = filled($data['slug'] ?? null) ? Str::slug($data['slug']) : Str::slug($data['title']);
         validator(['slug' => $data['slug']], ['slug' => ['required', 'max:255', Rule::unique('articles', 'slug')->ignore($article?->id)]])->validate();
         $data['is_featured'] = $request->boolean('is_featured');
+        $data['secondary_keywords'] = collect(explode(',', $data['secondary_keywords'] ?? ''))
+            ->map(fn (string $keyword): string => trim($keyword))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
         $data['published_at'] = $data['status'] === 'published'
             ? ($data['published_at'] ?? $article?->published_at?->toDateString() ?? now()->toDateString())
             : ($data['published_at'] ?? null);

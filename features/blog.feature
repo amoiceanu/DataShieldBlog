@@ -13,10 +13,15 @@ Feature: Securitate Digitală
     And the page should contain "Cum recunoști un e-mail de tip phishing"
 
   Scenario: Category filter limits results
-    When I filter articles by category "phishing"
+    When I filter articles by category "fraude-online"
     Then the response status should be 200
     And the page should contain "Cum recunoști un e-mail de tip phishing"
     And the page should not contain "10 reguli simple ca să îți protejezi datele personale online"
+
+  Scenario: Old category links redirect to the renamed section
+    When I filter articles by category "phishing"
+    Then the response status should be 301
+    And the response should redirect to "/articole?categorie=fraude-online"
 
   Scenario: Unknown article returns not found
     When I open article "articol-inexistent"

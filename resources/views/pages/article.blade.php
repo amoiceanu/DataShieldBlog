@@ -1,9 +1,10 @@
 @extends('layouts.app')
-@section('title', $article->title.' — Securitate Digitală')
-@section('description', $article->excerpt)
+@section('title', ($article->seo_title ?: $article->title).' — Securitate Digitală')
+@section('description', $article->meta_description ?: $article->excerpt)
 @section('og_type', 'article')
 @section('og_image', asset('images/articles/'.$article->image))
 @push('head')
+@if($article->focus_keyword || $article->secondary_keywords)<meta name="keywords" content="{{ implode(', ', array_filter([$article->focus_keyword, ...($article->secondary_keywords ?? [])])) }}">@endif
 <meta property="article:published_time" content="{{ $article->published_at->toAtomString() }}">
 <script type="application/ld+json">{!! json_encode([
     '@context' => 'https://schema.org',
