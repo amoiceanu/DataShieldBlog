@@ -14,7 +14,16 @@ class PublicSitemap
     /** @return Collection<int, array{loc:string,lastmod?:string}> */
     public function entries(): Collection
     {
-        $entries = collect([['loc' => self::ORIGIN.'/']]);
+        // Keep the existing six public pages in the sitemap while adding the
+        // canonical category landing pages and published articles.
+        $entries = collect([
+            ['loc' => self::ORIGIN.'/'],
+            ['loc' => self::ORIGIN.route('articles.index', [], absolute: false)],
+            ['loc' => self::ORIGIN.route('about', [], absolute: false)],
+            ['loc' => self::ORIGIN.route('contact', [], absolute: false)],
+            ['loc' => self::ORIGIN.route('privacy', [], absolute: false)],
+            ['loc' => self::ORIGIN.route('cookies', [], absolute: false)],
+        ]);
 
         $categories = Category::query()
             ->whereHas('articles', fn ($query) => $query->where('status', 'published')->whereNotNull('published_at')->whereDate('published_at', '<=', now()))

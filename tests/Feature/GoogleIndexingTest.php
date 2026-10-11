@@ -34,16 +34,21 @@ class GoogleIndexingTest extends TestCase
         $this->assertSame(30, Article::count());
         $this->assertSame(29, Article::where('status', 'published')->count());
         $this->assertSame(29, Article::where('status', 'published')->whereNotNull('published_at')->whereDate('published_at', '<=', now())->count(), 'today='.now()->toDateTimeString().' first='.Article::where('status', 'published')->first()->published_at.' raw='.Article::where('status', 'published')->value('published_at'));
-        $this->assertSame(40, app(PublicSitemap::class)->entries()->count());
+        $this->assertSame(45, app(PublicSitemap::class)->entries()->count());
 
-        $response = $this->get('/sitemap.xml')->assertOk();
+        $response = $this->get('/sitemap.xml', ['User-Agent' => 'Googlebot'])->assertOk();
         $this->assertStringStartsWith('application/xml', $response->headers->get('Content-Type'));
+        $this->assertStringContainsString('public', $response->headers->get('Cache-Control'));
+        $this->assertFalse($response->headers->has('Set-Cookie'), 'Sitemap GET must not start a cookie session.');
         $xml = simplexml_load_string($response->getContent());
         $this->assertNotFalse($xml);
         $locations = collect($xml->xpath('//*[local-name()="url"]'))->map(fn ($node) => (string) $node->loc);
-        $this->assertSame(40, $locations->count());
+        $this->assertSame(45, $locations->count());
         $this->assertSame($locations->count(), $locations->unique()->count());
         $this->assertContains('https://securitatedigitala.ro/', $locations->all());
+        foreach (['/articole', '/despre', '/contact', '/politica-de-confidentialitate', '/politica-cookies'] as $path) {
+            $this->assertContains('https://securitatedigitala.ro'.$path, $locations->all());
+        }
         $categoryUrl = 'https://securitatedigitala.ro'.route('sections.show', Category::whereHas('articles', fn ($query) => $query->where('status', 'published'))->firstOrFail()->slug, false);
         $this->assertContains($categoryUrl, $locations->all());
         $this->assertNotContains('https://securitatedigitala.ro'.route('articles.show', $draft->slug, false), $locations->all());
@@ -59,19 +64,47 @@ class GoogleIndexingTest extends TestCase
             ->assertOk()
             ->assertSee($category->name)
             ->assertSee($article->title)
-            ->assertSee('<link rel="canonical" href="'.route('sections.show', $category->slug).'">', false)
+            ->assertSee('<link rel="canonical" href="https://securitatedigitala.ro'.route('sections.show', $category->slug, absolute: false).'">', false)
             ->assertDontSee('noindex', false);
+    }
+
+    public function test_each_indexable_category_has_useful_content_and_is_listed_in_the_sitemap(): void
+    {
+        $categories = Category::query()
+            ->whereHas('articles', fn ($query) => $query->where('status', 'published')->whereNotNull('published_at')->whereDate('published_at', '<=', now()))
+            ->with(['articles' => fn ($query) => $query->where('status', 'published')->whereNotNull('published_at')->whereDate('published_at', '<=', now())->latest('published_at')])
+            ->get();
+        $this->assertCount(10, $categories);
+
+        $response = $this->get('/sitemap.xml');
+        $xml = simplexml_load_string($response->getContent());
+        $locations = collect($xml->xpath('//*[local-name()="url"]'))->map(fn ($node) => (string) $node->loc);
+
+        foreach ($categories as $category) {
+            $canonical = 'https://securitatedigitala.ro'.route('sections.show', $category->slug, absolute: false);
+            $this->assertContains($canonical, $locations->all());
+            $this->get(route('sections.show', $category->slug))
+                ->assertOk()
+                ->assertSee($category->name)
+                ->assertSee($category->articles->first()->title)
+                ->assertSee('<link rel="canonical" href="'.$canonical.'">', false)
+                ->assertDontSee('noindex', false);
+        }
     }
 
     public function test_robots_txt_allows_public_crawling_and_advertises_the_sitemap(): void
     {
         $this->get('/robots.txt')
             ->assertOk()
-            ->assertHeader('Content-Type', 'text/plain; charset=utf-8')
+            ->assertHeader('Content-Type', 'text/plain; charset=UTF-8')
             ->assertSee('User-agent: *')
             ->assertSee('Allow: /')
-            ->assertSee('Disallow: /admin')
             ->assertSee('Sitemap: https://securitatedigitala.ro/sitemap.xml');
+
+        $response = $this->get('/robots.txt', ['User-Agent' => 'Googlebot'])->assertOk();
+        $this->assertFalse($response->headers->has('Set-Cookie'), 'robots.txt GET must not start a cookie session.');
+        $this->assertStringContainsString('public', $response->headers->get('Cache-Control'));
+        $this->assertSame("User-agent: *\nAllow: /\n\nSitemap: https://securitatedigitala.ro/sitemap.xml\n", $response->getContent());
     }
 
     public function test_www_host_redirects_to_the_canonical_domain_and_query(): void

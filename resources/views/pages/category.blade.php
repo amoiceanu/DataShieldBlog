@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', $category->name.' — Securitate Digitală')
 @section('description', $category->description ?: 'Articole și ghiduri despre '.$category->name.'.')
-@section('canonical', route('sections.show', $category->slug))
+@section('canonical', 'https://securitatedigitala.ro'.route('sections.show', $category->slug, absolute: false))
 @if(request()->filled('page'))@section('robots', 'noindex,follow')@endif
 @section('content')
 <section class="page-hero container">

@@ -11,6 +11,9 @@ use App\Http\Controllers\Admin\ContactMessageController as AdminContactMessageCo
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Response;
 use App\Services\PublicSitemap;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 
 Route::get('/', [BlogController::class, 'home'])->name('home');
 Route::get('/articole', [BlogController::class, 'index'])->name('articles.index');
@@ -43,6 +46,17 @@ Route::view('/politica-de-confidentialitate', 'pages.privacy')->name('privacy');
 Route::view('/politica-cookies', 'pages.cookies')->name('cookies');
 Route::get('/sitemap.xml', function (PublicSitemap $sitemap) {
     $urls = $sitemap->entries();
-    return response()->view('sitemap', compact('urls'))->header('Content-Type', 'application/xml; charset=UTF-8');
-})->name('sitemap');
-Route::get('/robots.txt', fn () => Response::make("User-agent: *\nAllow: /\nDisallow: /admin\nSitemap: https://securitatedigitala.ro/sitemap.xml\n", 200, ['Content-Type' => 'text/plain']))->name('robots');
+    $xml = view('sitemap', compact('urls'))->render();
+
+    $response = Response::make($xml, 200, [
+        'Content-Type' => 'application/xml; charset=UTF-8',
+        'Cache-Control' => 'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400',
+    ])->setEtag(hash('sha256', $xml));
+    $response->isNotModified(request());
+
+    return $response;
+})->withoutMiddleware([StartSession::class, ShareErrorsFromSession::class, VerifyCsrfToken::class])->name('sitemap');
+Route::get('/robots.txt', fn () => Response::make("User-agent: *\nAllow: /\n\nSitemap: https://securitatedigitala.ro/sitemap.xml\n", 200, [
+    'Content-Type' => 'text/plain; charset=UTF-8',
+    'Cache-Control' => 'public, max-age=3600, s-maxage=86400',
+]))->withoutMiddleware([StartSession::class, ShareErrorsFromSession::class, VerifyCsrfToken::class])->name('robots');
