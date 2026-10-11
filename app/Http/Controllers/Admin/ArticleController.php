@@ -34,6 +34,11 @@ class ArticleController extends Controller
         return view('admin.articles.form', ['article' => new Article(['status' => 'draft']), 'categories' => Category::orderBy('name')->get()]);
     }
 
+    public function show(Article $article): View
+    {
+        return view('admin.articles.show', compact('article'));
+    }
+
     public function store(Request $request): RedirectResponse
     {
         $data = $this->validatedData($request);

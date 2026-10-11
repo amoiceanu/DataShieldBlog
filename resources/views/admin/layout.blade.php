@@ -33,7 +33,7 @@
                             <summary><i class="bi bi-chevron-right tree-chevron" aria-hidden="true"></i><span class="tree-section-name">{{ $section->name }}</span><span class="tree-count">{{ $section->articles->count() }}</span></summary>
                             <ul>
                                 @forelse($section->articles as $treeArticle)
-                                    <li><a class="admin-tree-article {{ request()->route('article')?->id === $treeArticle->id ? 'active' : '' }}" href="{{ route('admin.articole.edit', $treeArticle) }}" data-article-title="{{ mb_strtolower($treeArticle->title) }}"><span class="tree-article-title">{{ $treeArticle->title }}</span><span class="admin-tree-status {{ $treeArticle->status === 'draft' ? 'draft' : 'published' }}" title="{{ $treeArticle->status === 'draft' ? 'Draft' : 'Publicat' }}" aria-label="{{ $treeArticle->status === 'draft' ? 'Draft' : 'Publicat' }}"></span></a></li>
+                                    <li><a class="admin-tree-article {{ request()->route('article')?->id === $treeArticle->id ? 'active' : '' }}" href="{{ route('admin.articole.show', $treeArticle) }}" data-article-title="{{ mb_strtolower($treeArticle->title) }}"><span class="tree-article-title">{{ $treeArticle->title }}</span><span class="admin-tree-status {{ $treeArticle->status === 'draft' ? 'draft' : 'published' }}" title="{{ $treeArticle->status === 'draft' ? 'Draft' : 'Publicat' }}" aria-label="{{ $treeArticle->status === 'draft' ? 'Draft' : 'Publicat' }}"></span></a></li>
                                 @empty
                                     <li class="admin-tree-empty">Nu există articole</li>
                                 @endforelse

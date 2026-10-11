@@ -20,6 +20,7 @@ Route::post('/admin/logout', [AdminAuthController::class, 'destroy'])->middlewar
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function (): void {
     Route::redirect('/', '/admin/articole')->name('dashboard');
     Route::resource('articole', AdminArticleController::class)->except('show')->parameters(['articole' => 'article']);
+    Route::get('articole/{article}', [AdminArticleController::class, 'show'])->name('articole.show');
     Route::resource('sectiuni', AdminCategoryController::class)->except('show')->parameters(['sectiuni' => 'category']);
 });
 Route::view('/politica-de-confidentialitate', 'pages.privacy')->name('privacy');
