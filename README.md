@@ -48,6 +48,10 @@ Autentificarea este la `/admin/login`. Din panoul `/admin/articole` poți crea, 
 
 Catalogul editorial definește cele 10 secțiuni și adaugă cele 27 de articole noi ca publicate, cu metadate SEO, legături interne și surse. Pentru o bază de date existentă, după migrare rulează `php artisan db:seed --class=ContentCatalogSeeder`. Comanda este idempotentă: nu dublează articole și păstrează conținutul existent; articolele catalogului sunt publicate la prima importare, iar drafturile catalogului existente sunt publicate la rerulare. `php artisan migrate --seed` rulează și catalogul după cele trei articole introductive. Workflow-ul de deploy rulează migrarea și seederul catalogului după ce toate verificările CI trec.
 
+## Google Search Console și indexare
+
+Sitemap-ul dinamic se generează din articolele publicate și secțiunile care au conținut public. Dashboard-ul este disponibil administratorilor la `/admin/google-indexing`. Configurarea DNS/OAuth, limitele API și pașii de activare sunt documentate în [docs/GOOGLE_INDEXING_SETUP.md](docs/GOOGLE_INDEXING_SETUP.md); raportul inițial de producție este în [docs/GOOGLE_INDEXING_REPORT.md](docs/GOOGLE_INDEXING_REPORT.md). Auditul local se rulează cu `php artisan seo:check-indexability`; conectarea și trimiterea sitemap-ului necesită credențiale OAuth reale furnizate separat.
+
 ## Funcționalități
 
 - Pagina principală, index cu căutare, filtrare și paginare și pagini individuale de articol

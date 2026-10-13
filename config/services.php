@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'google_search_console' => [
+        'client_id' => env('GOOGLE_SEARCH_CONSOLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_SEARCH_CONSOLE_CLIENT_SECRET'),
+        'redirect_uri' => env('GOOGLE_SEARCH_CONSOLE_REDIRECT_URI', env('APP_URL').'/admin/google-indexing/callback'),
+        'property' => 'sc-domain:securitatedigitala.ro',
+        'sitemap' => 'https://securitatedigitala.ro/sitemap.xml',
+    ],
+
 ];

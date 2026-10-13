@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Articole despre securitate digitală — Securitate Digitală')
 @section('description', 'Ghiduri practice despre protecția datelor personale, phishing, fraude online, parole, autentificare și siguranță digitală.')
+@if(request()->filled('categorie') || request()->filled('q') || request()->filled('page'))@section('robots', 'noindex,follow')@endif
 @section('content')
 <section class="page-hero container">
     <span class="eyebrow">SECURITATE DIGITALĂ</span>

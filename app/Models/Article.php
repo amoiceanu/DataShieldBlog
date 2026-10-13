@@ -18,4 +18,13 @@ class Article extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function getImageAltAttribute(): string
+    {
+        return match ($this->image) {
+            'cont-facebook-instagram-spart.jpg' => 'Telefon cu alerte de conectare neobișnuită, lacăt roșu și scut de securitate',
+            'telefon-microfon-privacy.jpg' => 'Telefon cu indicator de microfon, semnale de publicitate și scut roșu pentru confidențialitate',
+            default => 'Ilustrație pentru '.$this->title,
+        };
+    }
 }

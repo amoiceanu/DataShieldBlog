@@ -17,6 +17,7 @@
             <nav class="admin-nav" aria-label="Administrare">
                 <a class="{{ request()->routeIs('admin.articole.*') ? 'active' : '' }}" href="{{ route('admin.articole.index') }}">Articole</a>
                 <a class="{{ request()->routeIs('admin.sectiuni.*') ? 'active' : '' }}" href="{{ route('admin.sectiuni.index') }}">Secțiuni</a>
+                <a class="{{ request()->routeIs('admin.google-indexing.*') ? 'active' : '' }}" href="{{ route('admin.google-indexing.index') }}">Google Indexing</a>
                 <a class="{{ request()->routeIs('admin.contact.*') ? 'active' : '' }}" href="{{ route('admin.contact.index') }}">Contact</a>
             </nav>
             <span class="admin-user">{{ auth()->user()->name }}</span>

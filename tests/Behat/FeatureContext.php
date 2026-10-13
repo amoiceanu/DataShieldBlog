@@ -34,6 +34,24 @@ class FeatureContext implements Context
         $this->response = $this->test->get('/');
     }
 
+    #[When('I open the sitemap')]
+    public function openSitemap(): void
+    {
+        $this->response = $this->test->get('/sitemap.xml');
+    }
+
+    #[When('I open robots.txt')]
+    public function openRobots(): void
+    {
+        $this->response = $this->test->get('/robots.txt');
+    }
+
+    #[When('I open public section :slug')]
+    public function openPublicSection(string $slug): void
+    {
+        $this->response = $this->test->get('/sectiuni/'.$slug);
+    }
+
     #[When('I open the admin dashboard')]
     public function openAdminDashboard(): void
     {

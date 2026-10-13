@@ -12,6 +12,23 @@ Feature: Securitate Digitală
     Then the response status should be 200
     And the page should contain "Cum îți securizezi contul de Facebook"
 
+  Scenario: Sitemap exposes the published article catalogue
+    When I open the sitemap
+    Then the response status should be 200
+    And the page should contain "urlset"
+    And the page should contain "cum-recunosti-sms-fals-fraude-mesaje"
+
+  Scenario: Public section page lists its published articles
+    When I open public section "fraude-online"
+    Then the response status should be 200
+    And the page should contain "Fraude online"
+    And the page should contain "Cum recunoști un e-mail de tip phishing"
+
+  Scenario: Robots file advertises the sitemap
+    When I open robots.txt
+    Then the response status should be 200
+    And the page should contain "Sitemap: https://securitatedigitala.ro/sitemap.xml"
+
   Scenario: Search finds a phishing guide
     When I search articles for "phishing"
     Then the response status should be 200

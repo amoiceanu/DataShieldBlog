@@ -5,15 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Securitate Digitală — Protejează-ți viața online.')</title>
     <meta name="description" content="@yield('description', 'Securitate Digitală oferă ghiduri practice despre protecția datelor personale, phishing, fraude online, parole, autentificare și siguranță digitală.')">
-    <link rel="canonical" href="https://securitatedigitala.ro{{ request()->getPathInfo() === '/' ? '' : request()->getPathInfo() }}">
+    @hasSection('robots')<meta name="robots" content="@yield('robots')">@endif
+    <link rel="canonical" href="@yield('canonical', 'https://securitatedigitala.ro'.(request()->getPathInfo() === '/' ? '/' : request()->getPathInfo()))">
     <link rel="icon" type="image/svg+xml" href="{{ asset('images/securitate-digitala-icon.svg') }}">
     <meta property="og:site_name" content="Securitate Digitală">
     <meta property="og:title" content="@yield('title', 'Securitate Digitală — Protejează-ți viața online.')">
     <meta property="og:description" content="@yield('description', 'Securitate Digitală oferă ghiduri practice despre protecția datelor personale, phishing, fraude online, parole, autentificare și siguranță digitală.')">
     <meta property="og:url" content="https://securitatedigitala.ro{{ request()->getPathInfo() === '/' ? '' : request()->getPathInfo() }}">
-    <meta property="og:image" content="{{ asset('images/articles/password-security.svg') }}">
+    <meta property="og:image" content="@yield('og_image', asset('images/articles/password-security.svg'))">
     <meta property="og:type" content="@yield('og_type', 'website')">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="@yield('og_image', asset('images/articles/password-security.svg'))">
     <meta name="twitter:title" content="@yield('title', 'Securitate Digitală — Protejează-ți viața online.')">
     <meta name="twitter:description" content="@yield('description', 'Securitate Digitală oferă ghiduri practice despre protecția datelor personale, phishing, fraude online, parole, autentificare și siguranță digitală.')">
     <script type="application/ld+json">{!! json_encode(['@context' => 'https://schema.org', '@type' => 'Organization', 'name' => 'Securitate Digitală', 'url' => 'https://securitatedigitala.ro', 'logo' => 'https://securitatedigitala.ro/images/securitate-digitala-icon.svg'], JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) !!}</script>
