@@ -26,6 +26,6 @@
             <div class="empty-state"><i class="bi bi-search"></i><h2>Nu am găsit articole</h2><p>Încearcă alți termeni sau selectează o categorie diferită.</p><a class="btn btn-outline-light" href="{{ route('articles.index') }}">Vezi toate articolele</a></div>
         @endforelse
     </div>
-    <div class="pagination-wrap">{{ $articles->links() }}</div>
+    <div class="pagination-wrap">{{ $articles->links('pagination::bootstrap-5') }}</div>
 </section>
 @endsection

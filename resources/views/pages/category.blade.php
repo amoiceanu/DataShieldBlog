@@ -15,6 +15,6 @@
         @forelse($articles as $article)<x-article-card :article="$article" />
         @empty<div class="empty-state"><h2>Nu există articole publicate în această secțiune.</h2></div>@endforelse
     </div>
-    <div class="pagination-wrap">{{ $articles->links() }}</div>
+    <div class="pagination-wrap">{{ $articles->links('pagination::bootstrap-5') }}</div>
 </section>
 @endsection
