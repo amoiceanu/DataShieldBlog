@@ -1,0 +1,25 @@
+.card-image {
+    isolation: isolate;
+}
+
+.card-image-placeholder {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #ff5267;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.card-image-placeholder .bi {
+    display: block;
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.card-image img {
+    position: relative;
+    z-index: 1;
+    object-fit: cover;
+}

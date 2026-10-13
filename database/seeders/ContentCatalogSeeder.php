@@ -469,6 +469,48 @@ HTML,
 HTML,
             ],
             [
+                'title' => 'Ce este autentificarea multifactor (MFA) și de ce îți protejează conturile mai bine decât o parolă?',
+                'slug' => 'ce-este-autentificarea-multifactor-mfa', 'category' => 'parole-autentificare',
+                'excerpt' => 'Autentificarea multifactor (MFA) cere dovezi din cel puțin două categorii diferite, astfel încât parola singură să nu fie suficientă. Compară metodele, alege opțiuni rezistente la phishing și pregătește recuperarea contului înainte de a pierde dispozitivul.',
+                'seo_title' => 'Autentificarea multifactor (MFA): cum îți protejează contul',
+                'meta_description' => 'Află ce este autentificarea multifactor (MFA), cum funcționează și de ce poate împiedica accesul atacatorilor chiar dacă aceștia îți cunosc parola.',
+                'focus_keyword' => 'autentificare multifactor MFA', 'secondary_keywords' => ['MFA', '2FA', 'autentificare în doi pași', 'cheie de securitate'], 'reading_time' => 6,
+                'related' => ['autentificare-doi-pasi-cum-activezi', 'ce-sunt-passkeys-parole', 'cum-creezi-parole-sigure-manager', 'cum-recunosti-email-phishing'],
+                'sources' => [
+                    ['CISA: More than a Password (resursă arhivată)', 'https://www.cisa.gov/ncas/tips/st05-012'],
+                    ['CISA: Require Multifactor Authentication', 'https://www.cisa.gov/audiences/small-and-medium-businesses/secure-your-business/require-multifactor-authentication'],
+                    ['CISA: Secure Our World — Turn on MFA', 'https://www.cisa.gov/secure-our-world'],
+                ],
+                'content' => <<<'HTML'
+<p>Imaginează-ți că cineva află parola contului tău de e-mail, Facebook sau de la un magazin online. Dacă parola este singura verificare, ea poate fi suficientă pentru a încerca să intre. Autentificarea multifactor (MFA) adaugă o verificare dintr-o altă categorie, astfel încât parola singură să nu deschidă contul.</p>
+<h2>Ce înseamnă MFA?</h2>
+<p>MFA vine de la <em>Multi-Factor Authentication</em> și înseamnă verificarea identității folosind cel puțin doi factori independenți. Factorii se împart, în general, în trei categorii:</p>
+<ul><li><strong>Ceva ce știi:</strong> o parolă sau un PIN.</li><li><strong>Ceva ce deții:</strong> telefonul, o aplicație de autentificare sau o cheie fizică de securitate.</li><li><strong>Ceva ce ești:</strong> o caracteristică biometrică, precum amprenta sau recunoașterea facială.</li></ul>
+<p>De exemplu, introduci parola și apoi confirmi conectarea pe un dispozitiv pe care îl deții. Două verificări nu înseamnă automat doi factori: două parole sau o parolă urmată de un PIN sunt, de regulă, ambele factori din categoria „ceva ce știi”. Termenii 2FA (autentificare în doi pași) și MFA sunt adesea folosiți împreună, dar MFA este termenul mai larg.</p>
+<h2>De ce este mai sigură decât o parolă singură?</h2>
+<p>Parolele pot fi ghicite, reutilizate, furate în urma unei breșe sau introduse pe o pagină de phishing. Dacă un atacator află parola, MFA îi cere să treacă și verificarea suplimentară. Asta reduce mult șansa ca parola compromisă să fie suficientă pentru preluarea contului.</p>
+<p>Imaginează-ți că ai introdus parola pe un site fals care imită un serviciu cunoscut. Fără MFA, atacatorul poate încerca să se autentifice doar cu acea parolă. Cu MFA, accesul depinde și de factorul suplimentar. Protecția depinde însă de metoda aleasă: un cod introdus pe o pagină falsă în timp real poate fi furat și folosit înainte să expire.</p>
+<h2>Tipuri de MFA și nivelul lor de protecție</h2>
+<h3>Cod primit prin SMS</h3>
+<p>Serviciul trimite un cod pe telefon. Activarea SMS-ului este, de regulă, mai bună decât folosirea exclusivă a parolei, dar metoda depinde de siguranța numărului și a rețelei mobile. Fraudele de tip SIM swap sau alte forme de preluare a numărului pot pune codurile în pericol. Dacă există o opțiune mai rezistentă la phishing, prefer-o pentru e-mail, conturi administrative și servicii financiare.</p>
+<h3>Aplicație de autentificare</h3>
+<p>O aplicație dedicată poate genera coduri temporare direct pe dispozitiv, fără să aștepte un SMS. Durata și configurarea depind de serviciu și de aplicație. Codul rămâne sensibil: nu-l dicta, nu-l trimite prin chat și nu-l introduce pe o pagină deschisă dintr-un link suspect. Atacatorii pot încerca să-l folosească imediat după ce îl obțin.</p>
+<h3>Notificări de confirmare</h3>
+<p>Unele servicii trimit o solicitare de aprobare către un dispozitiv deja conectat. Funcția de potrivire a unui număr afișat pe ecran poate ajuta la evitarea aprobărilor accidentale. Respinge solicitările pe care nu le-ai inițiat; o serie de notificări repetate poate fi o încercare de a te obosi până apeși „Aprobă”.</p>
+<h3>Passkeys și chei de securitate</h3>
+<p>Passkeys și cheile de securitate compatibile cu FIDO/WebAuthn folosesc criptografie și sunt concepute să reziste phishingului bazat pe domenii false. Passkey-ul poate fi deblocat local cu PIN-ul sau biometria dispozitivului; serviciul verifică o dovadă criptografică, nu primește amprenta ta. Cheia fizică trebuie păstrată în siguranță și este bine să configurezi o metodă de rezervă.</p>
+<p>Nicio metodă nu elimină toate riscurile. Un dispozitiv deblocat, o sesiune furată sau o recuperare de cont slab protejată pot crea alte căi de acces. Totuși, metodele rezistente la phishing sunt o alegere puternică atunci când serviciul le oferă.</p>
+<h2>Cum activezi MFA fără să te blochezi în afara contului</h2>
+<ol><li>Deschide aplicația sau website-ul oficial; tastează adresa ori folosește aplicația instalată, în loc să urmezi un link primit prin mesaj.</li><li>Intră la <strong>Securitate</strong> și caută „Autentificare multifactor”, „Verificare în doi pași”, „2FA” sau „MFA”. Denumirile diferă între servicii.</li><li>Alege cea mai sigură metodă disponibilă. Activează passkey sau cheie de securitate dacă serviciul și dispozitivele tale le acceptă; altfel, configurează o aplicație sau altă opțiune oferită.</li><li>Adaugă o metodă de rezervă, dacă este disponibilă, și salvează codurile de recuperare într-un manager de parole sau într-un loc offline sigur, separat de telefon.</li><li>Testează autentificarea și recuperarea înainte să schimbi ori să resetezi dispozitivul. Nu păstra singura cheie de acces în același loc cu telefonul pe care îl poți pierde.</li></ol>
+<p>Începe cu adresa principală de e-mail, deoarece poate fi folosită pentru resetarea parolelor altor conturi. Apoi protejează serviciile financiare, rețelele sociale, magazinele online și spațiile de stocare în cloud. Pentru pașii de activare, vezi și ghidul nostru despre <a href="/articole/autentificare-doi-pasi-cum-activezi">autentificarea în doi pași</a>.</p>
+<h2>Ce nu poate face MFA?</h2>
+<p>MFA nu garantează protecție absolută și nu înlocuiește o parolă unică, actualizările sau atenția la solicitările necerute. Unele coduri și notificări pot fi capturate prin phishing în timp real, iar un atacator poate încerca să păcălească utilizatorul ori să fure o sesiune deja deschisă. Folosește passkeys sau chei de securitate acolo unde sunt disponibile, verifică domeniul înainte de autentificare și nu aproba conectări pe care nu le-ai început.</p>
+<p>Dacă primești o alertă de conectare neașteptată, respinge cererea, accesează contul direct din aplicația oficială și verifică activitatea recentă. Schimbă parola numai dacă ai motive să crezi că a fost expusă și închide sesiunile necunoscute. Nu transmite nimănui codurile de rezervă sau codurile temporare.</p>
+<h2>Concluzie</h2>
+<p>O parolă puternică și unică este importantă, dar MFA adaugă o barieră suplimentară atunci când parola este compromisă. Activeaz-o astăzi pentru conturile esențiale, alege metoda cea mai rezistentă la phishing pe care o poți folosi și păstrează în siguranță opțiunile de recuperare. Pentru protecție suplimentară, citește și despre <a href="/articole/ce-sunt-passkeys-parole">passkeys</a> și despre <a href="/articole/cum-creezi-parole-sigure-manager">parole unice și manageri de parole</a>.</p>
+HTML,
+            ],
+            [
                 'title' => 'Ce sunt passkeys și de ce sunt mai sigure decât parolele',
                 'slug' => 'ce-sunt-passkeys-parole', 'category' => 'parole-autentificare',
                 'excerpt' => 'Passkeys sunt credențiale criptografice păstrate pe dispozitiv sau sincronizate printr-un manager compatibil. Ele pot simplifica autentificarea și reduc riscul ca o parolă să fie introdusă pe un site de phishing.',
