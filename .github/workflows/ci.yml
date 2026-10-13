@@ -17,68 +17,127 @@ jobs:
     name: Composer security audit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Set up PHP and Composer
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
         with:
           php-version: '8.3'
           tools: composer
       # Behat depends on behat/transliterator, which is abandoned but has no
       # replacement. Keep reporting it without treating abandonment as a CVE.
-      - run: composer audit --locked --abandoned=report
+      - name: Audit Composer dependencies
+        run: composer audit --locked --abandoned=report
 
   npm-audit:
     name: npm security audit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
-      - run: npm audit --audit-level=high
+      - name: Install locked npm dependencies
+        run: npm ci
+      - name: Audit npm dependencies
+        run: npm audit --audit-level=high
 
   asset-build:
     name: Compile frontend assets
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: npm
-      - run: npm ci
-      - run: npm run build
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+      - name: Install locked npm dependencies
+        run: npm ci
+      - name: Compile production assets
+        run: npm run build
+      - name: Save production assets for deployment
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: production-assets
           path: public/build/
           if-no-files-found: error
           retention-days: 1
 
-  php-tests:
-    name: PHPUnit, coverage, and Gherkin
+  phpunit:
+    name: Run PHPUnit
     runs-on: ubuntu-latest
     env:
       APP_KEY: base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
       XDEBUG_MODE: coverage
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Set up PHP with coverage support
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
         with:
           php-version: '8.3'
           coverage: xdebug
           extensions: mbstring, sqlite3, pdo_sqlite, xml, curl, dom, fileinfo
           tools: composer
-      - run: composer install --no-interaction --prefer-dist --no-progress
-      - run: vendor/bin/phpunit --coverage-clover=coverage.xml
-      - run: php scripts/check-coverage.php coverage.xml 70
-      - run: composer test:gherkin
+      - name: Install locked Composer dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+      - name: Run PHPUnit and generate Clover coverage
+        run: vendor/bin/phpunit --coverage-clover=coverage.xml
+      - name: Save coverage report for the coverage gate
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: phpunit-coverage
+          path: coverage.xml
+          if-no-files-found: error
+          retention-days: 1
+
+  coverage-floor:
+    name: Enforce 70% coverage floor
+    needs: [phpunit]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Set up PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: '8.3'
+          extensions: xml
+      - name: Download PHPUnit coverage report
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8
+        with:
+          name: phpunit-coverage
+      - name: Enforce minimum statement coverage
+        run: php scripts/check-coverage.php coverage.xml 70
+
+  gherkin:
+    name: Run executable Gherkin scenarios
+    runs-on: ubuntu-latest
+    env:
+      APP_KEY: base64:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Set up PHP
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, sqlite3, pdo_sqlite, xml, curl, dom, fileinfo
+          tools: composer
+      - name: Install locked Composer dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+      - name: Run Gherkin scenarios with Behat
+        run: composer test:gherkin
 
   deploy:
     name: Deploy production
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [composer-audit, npm-audit, asset-build, php-tests]
+    needs: [composer-audit, npm-audit, asset-build, phpunit, coverage-floor, gherkin]
     runs-on: ubuntu-latest
     concurrency:
       group: securitate-digitala-production
