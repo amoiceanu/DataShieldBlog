@@ -1,0 +1,15 @@
+.contact-success {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    padding: 16px 19px;
+    border: 1px solid #256342;
+    border-radius: 10px;
+    background: #10271d;
+    color: #a8efc4;
+}
+
+.contact-success > i { margin-top: 2px; font-size: 20px; }
+.contact-success strong { display: block; color: #c8f8da; font-size: 14px; }
+.contact-success p { margin: 2px 0 0; color: #a8efc4; font-size: 13px; }

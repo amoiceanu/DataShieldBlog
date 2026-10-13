@@ -12,6 +12,7 @@
             <h2>Navigare</h2>
             <a href="{{ route('home') }}">Home</a>
             <a href="{{ route('articles.index') }}">Articole</a>
+            <a href="{{ route('home') }}#sfatul-zilei">Sfatul zilei</a>
             <a href="{{ route('articles.index', ['categorie' => 'ghiduri']) }}">Ghiduri</a>
             <a href="{{ route('about') }}">Despre</a>
             <a href="{{ route('contact') }}">Contact</a>
@@ -24,12 +25,14 @@
         </div>
         <div>
             <h2>Informații</h2>
+            <a href="{{ route('terms') }}">Termeni și condiții</a>
             <a href="{{ route('privacy') }}">Politica de confidențialitate</a>
             <a href="{{ route('cookies') }}">Politica cookies</a>
+            <a href="{{ route('contact') }}">Contact și solicitări</a>
         </div>
     </div>
     <div class="container footer-bottom">
-        <p>© 2026 Securitate Digitală. Toate drepturile rezervate.</p>
+        <p>© {{ now()->year }} Securitate Digitală. Toate drepturile rezervate.</p>
         <p>Conținut educativ și informativ. Nu reprezintă consultanță juridică sau de securitate informatică personalizată.</p>
     </div>
 </footer>

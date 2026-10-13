@@ -23,3 +23,23 @@
     z-index: 1;
     object-fit: cover;
 }
+
+.article-cover-placeholder {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #ff5267;
+    background: radial-gradient(circle, #ff304522, transparent 56%);
+}
+
+.article-cover-placeholder .bi {
+    font-size: clamp(4rem, 9vw, 6rem);
+    line-height: 1;
+    filter: drop-shadow(0 8px 26px #ff304533);
+}
+
+.article-cover img {
+    position: relative;
+    z-index: 1;
+}

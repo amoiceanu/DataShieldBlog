@@ -2,7 +2,13 @@
 @section('title', ($article->seo_title ?: $article->title).' — Securitate Digitală')
 @section('description', $article->meta_description ?: $article->excerpt)
 @section('og_type', 'article')
-@section('og_image', 'https://securitatedigitala.ro/images/articles/'.$article->image)
+@php
+    $coverIcon = $article->cover_icon;
+    $articleOgImage = filled($article->image)
+        ? asset('images/articles/'.$article->image)
+        : asset('images/articles/password-security.svg');
+@endphp
+@section('og_image', $articleOgImage)
 @push('head')
 @if($article->focus_keyword || $article->secondary_keywords)<meta name="keywords" content="{{ implode(', ', array_filter([$article->focus_keyword, ...($article->secondary_keywords ?? [])])) }}">@endif
 <meta property="article:published_time" content="{{ $article->published_at->toAtomString() }}">
@@ -11,7 +17,7 @@
     '@type' => 'Article',
     'headline' => $article->title,
     'description' => $article->excerpt,
-    'image' => 'https://securitatedigitala.ro/images/articles/'.$article->image,
+    'image' => $articleOgImage,
     'datePublished' => $article->published_at->toAtomString(),
     'author' => ['@type' => 'Organization', 'name' => $article->author],
     'publisher' => ['@type' => 'Organization', 'name' => 'Securitate Digitală', 'url' => 'https://securitatedigitala.ro'],
@@ -27,7 +33,10 @@
         <p class="article-excerpt">{{ $article->excerpt }}</p>
         <div class="author-meta"><span class="author-avatar"><i class="bi bi-shield-lock"></i></span><span><b>{{ $article->author }}</b><small><time datetime="{{ $article->published_at->toDateString() }}">{{ $article->published_at->translatedFormat('j F Y') }}</time> · <x-reading-time :minutes="$article->reading_time" /></small></span></div>
     </div>
-    <div class="article-cover"><img src="{{ asset('images/articles/'.$article->image) }}" alt="{{ $article->image_alt }}" onerror="this.style.display='none'"></div>
+    <div class="article-cover">
+        <span class="article-cover-placeholder" aria-hidden="true"><i class="bi {{ $coverIcon }}"></i></span>
+        @if(filled($article->image))<img src="{{ asset('images/articles/'.$article->image) }}" alt="{{ $article->image_alt }}" onerror="this.style.display='none'">@endif
+    </div>
 </section>
 <div class="container article-layout">
     <article class="article-content">

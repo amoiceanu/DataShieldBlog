@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\DailyTip;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
@@ -68,6 +69,13 @@ class ContentCatalogSeeder extends Seeder
                     $article->update(['image' => $data['image']]);
                 }
             }
+
+            DailyTip::firstOrCreate(['slug' => 'verifica-linkul-inainte-sa-te-autentifici'], [
+                'title' => 'Verifică linkul înainte să te autentifici',
+                'body' => 'Deschide serviciul din aplicația oficială sau tastează adresa cunoscută. Un link primit prin mesaj poate duce la o pagină falsă, chiar dacă arată ca site-ul real.',
+                'status' => 'published',
+                'published_at' => today()->toDateString(),
+            ]);
 
             Cache::forget('blog.categories');
         });

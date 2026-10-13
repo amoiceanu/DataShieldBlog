@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\Category;
+use App\Services\DailyTipService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\RedirectResponse;
@@ -11,11 +12,11 @@ use Illuminate\View\View;
 
 class BlogController extends Controller
 {
-    public function home(): View
+    public function home(DailyTipService $dailyTips): View
     {
         $articles = Article::with('category')->where('status', 'published')->whereDate('published_at', '<=', now())->latest('published_at')->take(3)->get();
         $featured = Article::with('category')->where('status', 'published')->whereDate('published_at', '<=', now())->where('is_featured', true)->first() ?? $articles->first();
-        return view('pages.home', ['articles' => $articles, 'featured' => $featured, 'categories' => $this->categories()]);
+        return view('pages.home', ['articles' => $articles, 'featured' => $featured, 'categories' => $this->categories(), 'dailyTip' => $dailyTips->today()]);
     }
 
     public function index(Request $request): View|RedirectResponse

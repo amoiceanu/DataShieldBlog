@@ -1,12 +1,12 @@
 @extends('layouts.app')
-@section('title', 'Securitate Digitală — Protejează-ți viața online.')
-@section('description', 'Securitate Digitală oferă ghiduri practice despre protecția datelor personale, phishing, fraude online, parole, autentificare și siguranță digitală.')
+@section('title', 'Securitate digitală și cibernetică | Siguranță online')
+@section('description', 'Ghiduri de securitate digitală, cibernetică și securitate online, pentru siguranță online: protecția conturilor, phishing și fraude.')
 @section('content')
 <section class="hero container">
     <div class="hero-copy">
         <span class="eyebrow"><i class="bi bi-shield-check"></i> SECURITATE DIGITALĂ</span>
-        <h1>Protejează-ți viața <span>online.</span></h1>
-        <p>Ghiduri practice despre securitate online, protecția datelor personale, phishing, fraude digitale și confidențialitate.</p>
+        <h1>Securitate cibernetică pentru <span>viața de zi cu zi.</span></h1>
+        <p>Ghiduri clare de securitate online și siguranță online: protejează-ți conturile și datele, recunoaște phishingul și evită fraudele digitale.</p>
         <div class="hero-actions">
             <a class="btn btn-primary" href="{{ $categories->firstWhere('slug', 'ghiduri-practice') ? route('sections.show', 'ghiduri-practice') : route('articles.index') }}">Citește ghidurile <i class="bi bi-arrow-right"></i></a>
             <a class="btn btn-outline-light" href="#ultimele">Cele mai noi articole</a>
@@ -22,6 +22,17 @@
         <div class="matrix">01&nbsp; 10&nbsp; 11<br>10&nbsp; 01&nbsp; 01<br>11&nbsp; 10&nbsp; 00</div>
     </div>
 </section>
+@if($dailyTip)
+<section class="daily-tip-section container" id="sfatul-zilei" aria-labelledby="daily-tip-title">
+    <div class="daily-tip-icon" aria-hidden="true"><i class="bi bi-lightbulb-fill"></i></div>
+    <div class="daily-tip-copy">
+        <span class="eyebrow">SFATUL ZILEI</span>
+        <h2 id="daily-tip-title">{{ $dailyTip->title }}</h2>
+        <p>{{ $dailyTip->body }}</p>
+    </div>
+        <span class="daily-tip-date"><i class="bi bi-calendar-check" aria-hidden="true"></i> {{ today()->format('d.m.Y') }}</span>
+</section>
+@endif
 <section class="section container" id="ultimele">
     <div class="section-heading">
         <div><span class="eyebrow">DIN REDACȚIE</span><h2>Ultimele articole<span>.</span></h2></div>
@@ -35,7 +46,7 @@
         <div class="category-grid">
             @php($icons = ['bi-shield-check','bi-person-vcard','bi-envelope-exclamation','bi-key','bi-people','bi-eye-slash','bi-exclamation-triangle','bi-journal-check'])
             @foreach($categories as $index => $category)
-                <a class="category-tile" href="{{ route('sections.show', $category->slug) }}"><i class="bi {{ $icons[$index % count($icons)] }}"></i><span>{{ $category->name }}</span><i class="bi bi-arrow-up-right arrow"></i></a>
+                <a class="category-tile" href="{{ route('sections.show', $category->slug) }}"><i class="bi {{ $icons[$index % count($icons)] }}"></i><span class="category-tile-copy"><span>{{ $category->name }}</span><small>{{ $category->articles_count }} {{ (int) $category->articles_count === 1 ? 'articol' : 'articole' }}</small></span><i class="bi bi-arrow-up-right arrow"></i></a>
             @endforeach
         </div>
     </div>

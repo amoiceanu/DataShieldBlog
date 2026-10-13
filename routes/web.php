@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ContactMessageController as AdminContactMessageController;
+use App\Http\Controllers\Admin\DailyTipController as AdminDailyTipController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Response;
 use App\Services\PublicSitemap;
@@ -40,10 +41,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('articole', AdminArticleController::class)->except('show')->parameters(['articole' => 'article']);
     Route::get('articole/{article}', [AdminArticleController::class, 'show'])->name('articole.show');
     Route::resource('sectiuni', AdminCategoryController::class)->except('show')->parameters(['sectiuni' => 'category']);
+    Route::resource('sfaturi', AdminDailyTipController::class)->except('show')->parameters(['sfaturi' => 'dailyTip']);
     Route::resource('contact', AdminContactMessageController::class)->only(['index', 'show'])->parameters(['contact' => 'contactMessage']);
 });
 Route::view('/politica-de-confidentialitate', 'pages.privacy')->name('privacy');
 Route::view('/politica-cookies', 'pages.cookies')->name('cookies');
+Route::view('/termeni-si-conditii', 'pages.terms')->name('terms');
 Route::get('/sitemap.xml', function (PublicSitemap $sitemap) {
     $urls = $sitemap->entries();
     $xml = view('sitemap', compact('urls'))->render();

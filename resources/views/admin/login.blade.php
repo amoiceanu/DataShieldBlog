@@ -19,5 +19,6 @@
             <button class="admin-button primary" type="submit">Autentificare</button>
         </form>
     </section></main>
+    <x-footer />
 </body>
 </html>

@@ -8,6 +8,12 @@
     <p>Ai o întrebare, o sugestie sau ai observat ceva ce ar trebui să corectăm? Scrie-ne.</p>
 </section>
 <section class="container section contact-layout">
+    @if(session('success'))
+        <div class="contact-success" role="status" aria-live="polite">
+            <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+            <div><strong>Mesaj trimis cu succes</strong><p>{{ session('success') }}</p></div>
+        </div>
+    @endif
     <div class="contact-aside">
         <i class="bi bi-chat-square-text"></i>
         <h2>Mesajul tău contează.</h2>
@@ -16,7 +22,6 @@
     </div>
     <form class="contact-form" action="{{ route('contact.store') }}" method="post">
         @csrf
-        @if(session('success'))<div class="alert alert-success">{{ session('success') }}</div>@endif
         <div class="honeypot" aria-hidden="true"><label for="website">Lasă gol</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
         <div class="form-row">
             <label>Nume<input name="name" value="{{ old('name') }}" autocomplete="name" required>@error('name')<small class="field-error">{{ $message }}</small>@enderror</label>

@@ -27,4 +27,24 @@ class Article extends Model
             default => 'Ilustrație pentru '.$this->title,
         };
     }
+
+    public function getCoverIconAttribute(): string
+    {
+        return match ($this->slug) {
+            'primele-30-minute-cont-compromis' => 'bi-stopwatch',
+            'cum-elimini-extensii-suspecte-browser' => 'bi-puzzle',
+            'cum-verifici-permisiuni-aplicatii-telefon' => 'bi-sliders',
+            default => match ($this->category?->slug) {
+                'fraude-online', 'stiri-alerte' => 'bi-exclamation-triangle',
+                'date-personale', 'confidentialitate' => 'bi-person-lock',
+                'parole-autentificare' => 'bi-key',
+                'retele-sociale' => 'bi-people',
+                'securitate-dispozitive' => 'bi-phone',
+                'ghiduri-practice' => 'bi-journal-check',
+                'inteligenta-artificiala' => 'bi-cpu',
+                'securitate-financiara' => 'bi-credit-card',
+                default => 'bi-shield-lock',
+            },
+        };
+    }
 }
