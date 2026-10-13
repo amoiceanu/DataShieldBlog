@@ -28,7 +28,7 @@
             <label>E-mail<input type="email" name="email" value="{{ old('email') }}" autocomplete="email" required>@error('email')<small class="field-error">{{ $message }}</small>@enderror</label>
         </div>
         <label>Subiect<input name="subject" value="{{ old('subject') }}" required>@error('subject')<small class="field-error">{{ $message }}</small>@enderror</label>
-        <label>Mesaj<textarea name="message" rows="6" required>{{ old('message') }}</textarea>@error('message')<small class="field-error">{{ $message }}</small>@enderror</label>
+        <label>Mesaj<textarea name="message" rows="6" aria-describedby="contact-message-help" required>{{ old('message') }}</textarea><small class="field-hint" id="contact-message-help">Oferă câteva detalii ca să-ți putem răspunde cât mai util.</small>@error('message')<small class="field-error">{{ $message }}</small>@enderror</label>
         <label class="check-label"><input type="checkbox" name="privacy_accepted" value="1" @checked(old('privacy_accepted')) required><span>Sunt de acord cu prelucrarea datelor furnizate pentru a primi un răspuns la solicitarea mea. <a href="{{ route('privacy') }}">Detalii</a></span></label>
         @error('privacy_accepted')<small class="field-error">{{ $message }}</small>@enderror
         <button class="btn btn-primary" type="submit">Trimite mesajul <i class="bi bi-arrow-right"></i></button>

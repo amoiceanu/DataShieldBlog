@@ -1,2 +1,14 @@
 @props(['article'])
-<article class="article-card"><a class="card-image" href="{{ route('articles.show', $article) }}" aria-label="Citește: {{ $article->title }}"><span class="card-image-placeholder" aria-hidden="true"><i class="bi {{ $article->cover_icon }}"></i></span>@if(filled($article->image))<img src="{{ asset('images/articles/'.$article->image) }}" alt="{{ $article->image_alt }}" loading="lazy" onerror="this.style.display='none'">@endif</a><div class="card-body"><x-category-badge :category="$article->category"/><h3><a href="{{ route('articles.show', $article) }}">{{ $article->title }}</a></h3><p>{{ $article->excerpt }}</p><div class="meta"><time datetime="{{ $article->published_at->toDateString() }}">{{ $article->published_at->translatedFormat('j F Y') }}</time><x-reading-time :minutes="$article->reading_time"/></div><a class="text-link" href="{{ route('articles.show', $article) }}">Citește articolul <i class="bi bi-arrow-right" aria-hidden="true"></i></a></div></article>
+@php($coverImage = filled($article->image) ? $article->image : 'editorial-cover.svg')
+<article class="article-card">
+    <a class="card-image" href="{{ route('articles.show', $article) }}" aria-label="Citește: {{ $article->title }}">
+        <img src="{{ asset('images/articles/'.$coverImage) }}" alt="{{ $article->image_alt }}" loading="lazy" onerror="this.style.display='none'">
+    </a>
+    <div class="card-body">
+        <x-category-badge :category="$article->category"/>
+        <h3><a href="{{ route('articles.show', $article) }}">{{ $article->title }}</a></h3>
+        <p>{{ $article->excerpt }}</p>
+        <div class="meta"><time datetime="{{ $article->published_at->toDateString() }}">{{ $article->published_at->translatedFormat('j F Y') }}</time><x-reading-time :minutes="$article->reading_time"/></div>
+        <a class="text-link" href="{{ route('articles.show', $article) }}">Citește articolul <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+    </div>
+</article>

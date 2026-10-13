@@ -24,6 +24,9 @@ class Article extends Model
         return match ($this->image) {
             'cont-facebook-instagram-spart.jpg' => 'Telefon cu alerte de conectare neobișnuită, lacăt roșu și scut de securitate',
             'telefon-microfon-privacy.jpg' => 'Telefon cu indicator de microfon, semnale de publicitate și scut roșu pentru confidențialitate',
+            'ghid-cont-compromis.svg' => 'Ecran de recuperare a unui cont cu alerte de securitate și pași de protecție',
+            'ghid-extensii-browser.svg' => 'Fereastră de browser cu extensii și un panou de verificare a permisiunilor',
+            'ghid-permisiuni-telefon.svg' => 'Telefon cu setări pentru permisiunile de locație, cameră și microfon',
             default => 'Ilustrație pentru '.$this->title,
         };
     }

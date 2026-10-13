@@ -43,13 +43,14 @@ class ContentCatalogSeeder extends Seeder
                 $content = $data['content'].$related.$sources;
                 $category = $categories[$data['category']];
                 $secondary = $data['secondary_keywords'];
+                $image = $data['image'] ?? 'generated/'.$data['slug'].'.svg';
 
                 $article = Article::firstOrCreate(['slug' => $data['slug']], [
                     'category_id' => $category->id,
                     'title' => $data['title'],
                     'excerpt' => $data['excerpt'],
                     'content' => $content,
-                    'image' => $data['image'] ?? null,
+                    'image' => $image,
                     'author' => 'Redacția Securitate Digitală',
                     'published_at' => today()->toDateString(),
                     'reading_time' => $data['reading_time'],
@@ -65,8 +66,8 @@ class ContentCatalogSeeder extends Seeder
                     $article->update(['status' => 'published', 'published_at' => today()->toDateString()]);
                 }
 
-                if (! $article->image && ! empty($data['image'])) {
-                    $article->update(['image' => $data['image']]);
+                if (! $article->image) {
+                    $article->update(['image' => $image]);
                 }
             }
 
@@ -903,6 +904,7 @@ HTML,
                 'seo_title' => 'Cont compromis: plan de acțiune pentru primele 30 de minute',
                 'meta_description' => 'Urmează pași clari după preluarea unui cont: securizează e-mailul, schimbă parolele, revocă sesiunile și contactează banca.',
                 'focus_keyword' => 'cont compromis ce faci', 'secondary_keywords' => ['recuperare cont', 'parolă furată', 'sesiuni active'], 'reading_time' => 7,
+                'image' => 'ghid-cont-compromis.svg',
                 'related' => ['ce-faci-dupa-link-phishing', 'cum-recunosti-email-phishing'],
                 'sources' => [
                     ['Google: securizarea unui cont compromis', 'https://support.google.com/accounts/answer/6294825?hl=ro'],
@@ -929,6 +931,7 @@ HTML,
                 'seo_title' => 'Cum găsești și elimini extensiile suspecte',
                 'meta_description' => 'Verifică permisiunile extensiilor și elimină-le în Chrome, Edge sau Firefox; află când merită resetat browserul.',
                 'focus_keyword' => 'eliminare extensii suspecte', 'secondary_keywords' => ['extensii Chrome', 'extensii Edge', 'extensii Firefox'], 'reading_time' => 6,
+                'image' => 'ghid-extensii-browser.svg',
                 'related' => ['cum-verifici-permisiuni-aplicatii-telefon', 'cum-verifici-telefon-compromis'],
                 'sources' => [
                     ['Google Chrome Help: instalează și gestionează extensii', 'https://support.google.com/chrome/answer/2664769?hl=ro'],
@@ -956,6 +959,7 @@ HTML,
                 'seo_title' => 'Cum verifici permisiunile aplicațiilor pe telefon',
                 'meta_description' => 'Revizuiește accesul aplicațiilor la cameră, microfon, locație, contacte și fotografii pe Android și iPhone.',
                 'focus_keyword' => 'permisiuni aplicații telefon', 'secondary_keywords' => ['permisiuni Android', 'permisiuni iPhone', 'acces cameră microfon locație'], 'reading_time' => 6,
+                'image' => 'ghid-permisiuni-telefon.svg',
                 'related' => ['securizare-telefon-android-iphone', 'cum-verifici-telefon-compromis'],
                 'sources' => [
                     ['Android: controale de confidențialitate și permisiuni', 'https://www.android.com/intl/en_nz/safety/privacy/'],

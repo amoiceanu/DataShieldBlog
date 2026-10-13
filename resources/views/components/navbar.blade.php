@@ -8,7 +8,6 @@
             @php($isGuidesListing = request()->routeIs('articles.index') && request()->query('categorie') === 'ghiduri-practice')
             <a class="{{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Home</a>
             <a class="{{ request()->routeIs('articles.*') && ! $isGuidesListing ? 'active' : '' }}" href="{{ route('articles.index') }}">Articole</a>
-            <a href="{{ route('home') }}#sfatul-zilei">Sfatul zilei</a>
             <a class="{{ $isGuidesListing ? 'active' : '' }}" href="{{ route('articles.index', ['categorie' => 'ghiduri-practice']) }}">Ghiduri</a>
             <a class="{{ request()->routeIs('about') ? 'active' : '' }}" href="{{ route('about') }}">Despre</a>
             <a class="{{ request()->routeIs('contact') ? 'active' : '' }}" href="{{ route('contact') }}">Contact</a>
