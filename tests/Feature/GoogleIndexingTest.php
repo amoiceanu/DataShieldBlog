@@ -32,10 +32,10 @@ class GoogleIndexingTest extends TestCase
     {
         $draft = Article::firstOrFail();
         $draft->update(['status' => 'draft']);
-        $this->assertSame(33, Article::count());
-        $this->assertSame(32, Article::where('status', 'published')->count());
-        $this->assertSame(32, Article::where('status', 'published')->whereNotNull('published_at')->whereDate('published_at', '<=', now())->count(), 'today='.now()->toDateTimeString().' first='.Article::where('status', 'published')->first()->published_at.' raw='.Article::where('status', 'published')->value('published_at'));
-        $this->assertSame(48, app(PublicSitemap::class)->entries()->count());
+        $this->assertSame(34, Article::count());
+        $this->assertSame(33, Article::where('status', 'published')->count());
+        $this->assertSame(33, Article::where('status', 'published')->whereNotNull('published_at')->whereDate('published_at', '<=', now())->count(), 'today='.now()->toDateTimeString().' first='.Article::where('status', 'published')->first()->published_at.' raw='.Article::where('status', 'published')->value('published_at'));
+        $this->assertSame(49, app(PublicSitemap::class)->entries()->count());
 
         $response = $this->get('/sitemap.xml', ['User-Agent' => 'Googlebot'])->assertOk();
         $this->assertStringStartsWith('application/xml', $response->headers->get('Content-Type'));
@@ -44,7 +44,7 @@ class GoogleIndexingTest extends TestCase
         $xml = simplexml_load_string($response->getContent());
         $this->assertNotFalse($xml);
         $locations = collect($xml->xpath('//*[local-name()="url"]'))->map(fn ($node) => (string) $node->loc);
-        $this->assertSame(48, $locations->count());
+        $this->assertSame(49, $locations->count());
         $this->assertSame($locations->count(), $locations->unique()->count());
         $this->assertContains('https://securitatedigitala.ro/', $locations->all());
         foreach (['/articole', '/despre', '/contact', '/politica-de-confidentialitate', '/politica-cookies'] as $path) {
@@ -209,9 +209,9 @@ class GoogleIndexingTest extends TestCase
         $audit = app(IndexabilityAuditService::class)->run(IndexabilityAudit::create(['status' => 'queued']));
 
         $this->assertSame('completed', $audit->status);
-        $this->assertSame(44, $audit->items->count());
-        $this->assertSame(44, $audit->items->where('local_status', 'eligible')->count());
-        $this->assertSame(44, $audit->items->where('discovered', true)->count());
+        $this->assertSame(45, $audit->items->count());
+        $this->assertSame(45, $audit->items->where('local_status', 'eligible')->count());
+        $this->assertSame(45, $audit->items->where('discovered', true)->count());
         $this->assertSame(0, $audit->summary['technical_problems']);
     }
 
