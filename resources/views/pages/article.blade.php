@@ -42,6 +42,15 @@
     <article class="article-content">
         {!! $article->content !!}
         <x-security-callout>Protecția datelor personale începe cu obiceiuri digitale simple, repetate consecvent.</x-security-callout>
+        @php($shareUrl = route('articles.show', $article))
+        <div class="article-share" aria-label="Distribuie articolul">
+            <span>Distribuie articolul</span>
+            <div class="article-share-links">
+                <a class="article-share-link facebook" href="https://www.facebook.com/sharer/sharer.php?{{ http_build_query(['u' => $shareUrl]) }}" target="_blank" rel="noopener noreferrer" aria-label="Distribuie pe Facebook" title="Facebook"><i class="bi bi-facebook" aria-hidden="true"></i></a>
+                <a class="article-share-link instagram" href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Deschide Instagram pentru a distribui articolul" title="Instagram"><i class="bi bi-instagram" aria-hidden="true"></i></a>
+                <a class="article-share-link whatsapp" href="https://wa.me/?{{ http_build_query(['text' => $article->title.' '.$shareUrl]) }}" target="_blank" rel="noopener noreferrer" aria-label="Distribuie pe WhatsApp" title="WhatsApp"><i class="bi bi-whatsapp" aria-hidden="true"></i></a>
+            </div>
+        </div>
         <div class="article-end"><span>Ți-a fost util acest ghid?</span><a href="{{ route('articles.index') }}" class="text-link">Descoperă și alte articole <i class="bi bi-arrow-right"></i></a></div>
     </article>
     <aside class="article-sidebar">
