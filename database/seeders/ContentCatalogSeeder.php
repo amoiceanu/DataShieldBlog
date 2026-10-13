@@ -1122,6 +1122,39 @@ HTML,
 <p>Alertele evoluează, iar o pagină poate fi actualizată sau retrasă. Verifică sursa chiar în ziua în care acționezi și nu trata o listă de știri veche ca pe o informare curentă. Acest articol este evergreen și nu afirmă existența unui incident recent.</p>
 HTML,
             ],
+            [
+                'title' => 'Cât de greu este să spargi o parolă? Diferența dintre 123456, o parolă simplă și una cu caractere speciale',
+                'slug' => 'cat-de-greu-este-sa-spargi-o-parola', 'category' => 'parole-autentificare',
+                'excerpt' => 'Lungimea și caracterul aleatoriu contează mai mult decât un simbol adăugat la final. Compară spațiile teoretice de căutare și află cum să alegi parole unice, lungi și greu de ghicit.',
+                'seo_title' => 'Cât de greu este să spargi o parolă? Lungime și caractere',
+                'meta_description' => 'Descoperă cât de greu poate fi spartă o parolă de 8, 10 sau 12 caractere și cum influențează literele, cifrele și simbolurile securitatea contului tău.',
+                'focus_keyword' => 'cât de greu se sparge o parolă', 'secondary_keywords' => ['parole puternice', 'atac brute-force', 'lungimea parolei', 'caractere speciale'], 'reading_time' => 6,
+                'related' => ['cum-creezi-parole-sigure-manager', 'ce-este-autentificarea-multifactor-mfa', 'cum-recunosti-email-phishing'],
+                'sources' => [
+                    ['NIST: cum creezi o parolă bună', 'https://www.nist.gov/cybersecurity-and-privacy/how-do-i-create-a-good-password'],
+                    ['NIST: Digital Identity Guidelines SP 800-63B', 'https://pages.nist.gov/800-63-4/sp800-63b.html'],
+                ],
+                'content' => <<<'HTML'
+<p>Parola ta conține litere mari, cifre și simboluri precum <code>!</code>, <code>?</code>, <code>#</code> sau <code>@</code>? Acestea pot mări spațiul de căutare, dar contează și mai mult <strong>cât de lungă și imprevizibilă este parola</strong>.</p>
+<h2>Cum încearcă atacatorii să ghicească parolele?</h2>
+<p>Într-un atac de tip <em>brute-force</em>, un program încearcă sistematic parole candidate. Alte atacuri pornesc de la dicționare, tipare frecvente, informații personale sau parole deja publicate în urma unor breșe. Parole precum <code>123456</code>, <code>password123</code>, <code>Qwerty123!</code> și <code>Parola2026!</code> sunt exemple de alegeri previzibile, chiar dacă unele conțin majuscule, cifre ori simboluri. Nu folosi aceste exemple ca parole reale.</p>
+<h2>Cât durează un atac brute-force, teoretic?</h2>
+<p>Comparația de mai jos presupune că fiecare parolă este generată uniform aleatoriu, că atacatorul poate testa un miliard de combinații pe secundă și că încearcă întregul spațiu înainte de a găsi parola:</p>
+<table><thead><tr><th>Lungime</th><th>62 de caractere posibile pe poziție</th><th>94 de caractere posibile pe poziție</th></tr></thead><tbody><tr><td>8 caractere</td><td>aproximativ 2,5 zile</td><td>aproximativ 70,6 zile</td></tr><tr><td>10 caractere</td><td>aproximativ 26,6 ani</td><td>aproximativ 1.707 ani</td></tr><tr><td>12 caractere</td><td>aproximativ 102.234 de ani</td><td>aproximativ 15,1 milioane de ani</td></tr></tbody></table>
+<p>Coloana cu 62 de caractere presupune litere mici, litere mari și cifre; cea cu 94 presupune caractere ASCII imprimabile, fără spațiu. Pentru o parolă aleatorie, atacatorul ar găsi-o în medie după aproximativ jumătate din încercări. Valorile sunt estimări matematice, nu durate garantate: viteza depinde de echipament, algoritmul de hash și tipul atacului. Un atac online poate fi limitat de serviciu, în timp ce atacul offline asupra unor hash-uri obținute dintr-o breșă are alte condiții.</p>
+<p>În acest model, trecerea de la 62 la 94 de caractere posibile creează aproximativ 28 de ori mai multe combinații la 8 caractere, 64 de ori la 10 și 148 de ori la 12. Dar asta se aplică numai dacă fiecare caracter este ales imprevizibil. Adăugarea unui simplu <code>!</code> la sfârșitul unei parole uzuale nu o face la fel de aleatorie ca o parolă generată cu adevărat la întâmplare.</p>
+<h2>Contează lungimea sau caracterele speciale mai mult?</h2>
+<p>O parolă lungă și aleatorie oferă un spațiu de căutare mult mai mare. În schimb, tipare precum o majusculă la început, un an la final și semnul exclamării sunt ușor de inclus în atacurile automate. NIST cere minimum 15 caractere pentru parolele folosite ca unic factor de autentificare și nu recomandă reguli obligatorii de compoziție, precum impunerea unui amestec de majuscule, cifre și simboluri. Cerințele serviciilor diferă, iar o parolă folosită împreună cu MFA poate avea reguli diferite.</p>
+<p>O frază-parolă lungă, alcătuită din cuvinte alese aleatoriu, poate fi mai ușor de reținut decât un șir scurt cu modificări previzibile. Pentru majoritatea conturilor, o parolă unică, generată și păstrată de un manager de parole, este o opțiune practică.</p>
+<h2>Cum alegi o parolă mai sigură?</h2>
+<ol><li>Alege cel puțin 15 caractere dacă serviciul permite și evită parolele comune ori compromise.</li><li>Folosește o parolă diferită pentru fiecare cont.</li><li>Generează parole aleatorii sau o frază lungă din cuvinte selectate aleatoriu; nu include nume, aniversări sau informații publice despre tine.</li><li>Folosește un manager de parole pentru generare și stocare.</li><li>Activează autentificarea multifactor și păstrează codurile de recuperare într-un loc sigur.</li><li>Schimbă parola dacă a fost compromisă sau ai introdus-o pe un site fals; nu este nevoie de schimbări periodice arbitrare.</li></ol>
+<h2>O parolă puternică te protejează de phishing?</h2>
+<p>Nu, dacă o introduci pe un website fals, parola poate ajunge la atacator indiferent de lungime. De aceea, verifică domeniul înainte de autentificare și activează MFA. Pentru conturi compatibile, passkeys și cheile de securitate pot oferi autentificare rezistentă la phishing. O parolă lungă și unică rămâne o măsură importantă, dar nu oprește singură toate metodele de preluare a contului.</p>
+<h2>Concluzie</h2>
+<p>Caracterele speciale pot mări combinațiile posibile pentru o parolă aleatorie, însă lungimea, unicitatea și imprevizibilitatea contează mai mult decât un simbol adăugat la un tipar cunoscut. Folosește un manager de parole, activează MFA și nu reutiliza credențialele. Citește și ghidurile noastre despre parole unice și manageri de parole, autentificarea multifactor și recunoașterea mesajelor de phishing.</p>
+<p><em>Calculele sunt exemple teoretice bazate pe spații uniforme de căutare; nu prezic timpul necesar pentru compromiterea unui anumit cont sau hash.</em></p>
+HTML,
+            ],
         ];
     }
 }
