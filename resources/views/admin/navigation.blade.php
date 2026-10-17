@@ -1,0 +1,1 @@
+<nav class="admin-navigation" aria-label="Administrare"><a class="btn {{ request()->routeIs('admin.pages*')?'btn-primary':'btn-outline-light' }}" href="{{ route('admin.pages') }}">Pagini și module</a><a class="btn {{ request()->routeIs('exposure.admin*')?'btn-primary':'btn-outline-light' }}" href="{{ route('exposure.admin') }}">Verificarea datelor personale</a></nav>

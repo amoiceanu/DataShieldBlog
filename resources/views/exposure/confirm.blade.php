@@ -1,0 +1,3 @@
+@extends('layouts.app')
+@section('title','Confirmă adresa — Securitate Digitală')
+@section('content')<div class="container exposure-page"><section class="exposure-panel exposure-confirm"><span class="exposure-icon"><i class="bi bi-envelope-check"></i></span><h1>Confirmă verificarea adresei</h1><p>Continuă numai dacă ai solicitat verificarea propriilor date în acest browser. Vom transmite datele necesare furnizorului selectat, conform formularului completat.</p><form method="post" action="{{ route('exposure.confirm') }}">@csrf<button class="btn btn-primary">Confirmă și pornește verificarea</button></form><p class="exposure-small">Link unic, valabil 15 minute. Nu colectăm parole.</p></section></div>@endsection
